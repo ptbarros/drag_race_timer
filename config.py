@@ -40,7 +40,7 @@ BUTTON_DEBOUNCE = 500       # Debounce time for buttons
 # Display settings
 # ------------------
 DISPLAY_ENABLED = True               # Enable/disable displays
-NUM_LANES = 2                        # Define the number of lanes
+NUM_LANES = 4                        # Define the number of lanes
 DISPLAYS_PER_LANE = 2                # Number of displays per lane (set to 2 for dual displays)
 I2C_SDA_PIN = 20                     # SDA pin for I2C (GPIO 20)
 I2C_SCL_PIN = 21                     # SCL pin for I2C (GPIO 21)
@@ -48,7 +48,7 @@ DISPLAY_BRIGHTNESS = 1               # Display brightness (0-15)
 
 # Display I2C addresses - set explicitly for each display
 # Format: [lane1_display1, lane1_display2, lane2_display1, lane2_display2, ...]
-DISPLAY_ADDRESSES = [0x70, 0x72, 0x71, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79]  # Adjust as needed
+DISPLAY_ADDRESSES = [0x70, 0x74, 0x71, 0x75, 0x72, 0x76, 0x73, 0x77, 0x78, 0x79]  # Adjust as needed
 # Display cycling settings
 DISPLAY_CYCLE_ENABLED = True     # Enable cycling between different info on secondary displays
 DISPLAY_CYCLE_INTERVAL = 3000    # Time to display each piece of info (in milliseconds)
