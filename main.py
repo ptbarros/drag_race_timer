@@ -25,27 +25,80 @@ except ImportError:
 
 def initialize_hardware():
     """Initialize all hardware components"""
-    # Create lane objects based on NUM_LANES in config
-    lanes = []
-    
-    # Lane configuration mapping
-    lane_configs = [
-        (1, config.LANE1_START_PIN, config.LANE1_FINISH_PIN, config.LANE1_SERVO_PIN, config.LANE1_PLAYER_BTN_PIN),
-        (2, config.LANE2_START_PIN, config.LANE2_FINISH_PIN, config.LANE2_SERVO_PIN, config.LANE2_PLAYER_BTN_PIN),
-        (3, config.LANE3_START_PIN, config.LANE3_FINISH_PIN, config.LANE3_SERVO_PIN, config.LANE3_PLAYER_BTN_PIN),
-        (4, config.LANE4_START_PIN, config.LANE4_FINISH_PIN, config.LANE4_SERVO_PIN, config.LANE4_PLAYER_BTN_PIN),
-        (5, config.LANE5_START_PIN, config.LANE5_FINISH_PIN, config.LANE5_SERVO_PIN, config.LANE5_PLAYER_BTN_PIN)
+    # Create lane objects with both digital and ADC inputs
+    lanes = [
+        Lane(1, 
+             start_pin=config.LANE1_START_PIN, 
+             finish_pin=config.LANE1_FINISH_PIN, 
+             start_adc_pin=config.LANE1_START_ADC_PIN, 
+             finish_adc_pin=config.LANE1_FINISH_ADC_PIN, 
+             servo_pin=config.LANE1_SERVO_PIN, 
+             player_btn_pin=config.LANE1_PLAYER_BTN_PIN, 
+             display_controller=display_controller),
+             
+        Lane(2, 
+             start_pin=config.LANE2_START_PIN, 
+             finish_pin=config.LANE2_FINISH_PIN, 
+             start_adc_pin=None,  # No ADC for additional lanes
+             finish_adc_pin=None, 
+             servo_pin=config.LANE2_SERVO_PIN, 
+             player_btn_pin=config.LANE2_PLAYER_BTN_PIN, 
+             display_controller=display_controller),
+             
+        Lane(3, 
+             start_pin=config.LANE3_START_PIN, 
+             finish_pin=config.LANE3_FINISH_PIN, 
+             start_adc_pin=None,  # No ADC for additional lanes
+             finish_adc_pin=None, 
+             servo_pin=config.LANE3_SERVO_PIN, 
+             player_btn_pin=config.LANE3_PLAYER_BTN_PIN, 
+             display_controller=display_controller),
+             
+        Lane(4, 
+             start_pin=config.LANE4_START_PIN, 
+             finish_pin=config.LANE4_FINISH_PIN, 
+             start_adc_pin=None,  # No ADC for additional lanes
+             finish_adc_pin=None, 
+             servo_pin=config.LANE4_SERVO_PIN, 
+             player_btn_pin=config.LANE4_PLAYER_BTN_PIN, 
+             display_controller=display_controller),
+             
+        # Add Lane 5 if needed
     ]
     
-    # Create only the number of lanes defined in config
-    for i in range(min(len(lane_configs), config.NUM_LANES)):
-        lane_id, start_pin, finish_pin, servo_pin, player_btn_pin = lane_configs[i]
-        lanes.append(Lane(lane_id, start_pin, finish_pin, servo_pin, player_btn_pin, display_controller))
+    # Enable debug mode if configured
+    if config.SENSOR_DEBUG_MODE:
+        for lane in lanes:
+            lane.enable_debug_mode(True)
     
     # Create race manager
     race_manager = RaceManager(lanes, config.START_BUTTON_PIN, config.RESET_BUTTON_PIN, display_controller)
     
     return lanes, race_manager
+
+# def initialize_hardware():
+#     """Initialize all hardware components"""
+#     # Create lane objects based on NUM_LANES in config
+#     lanes = []
+#     
+#     # Lane configuration mapping
+#     lane_configs = [
+#         (1, config.LANE1_START_PIN, config.LANE1_FINISH_PIN, config.LANE1_SERVO_PIN, config.LANE1_PLAYER_BTN_PIN),
+#         (2, config.LANE2_START_PIN, config.LANE2_FINISH_PIN, config.LANE2_SERVO_PIN, config.LANE2_PLAYER_BTN_PIN),
+#         (3, config.LANE3_START_PIN, config.LANE3_FINISH_PIN, config.LANE3_SERVO_PIN, config.LANE3_PLAYER_BTN_PIN),
+#         (4, config.LANE4_START_PIN, config.LANE4_FINISH_PIN, config.LANE4_SERVO_PIN, config.LANE4_PLAYER_BTN_PIN),
+#         (5, config.LANE5_START_PIN, config.LANE5_FINISH_PIN, config.LANE5_SERVO_PIN, config.LANE5_PLAYER_BTN_PIN)
+#     ]
+#     
+#     # Create only the number of lanes defined in config
+#     for i in range(min(len(lane_configs), config.NUM_LANES)):
+#         lane_id, start_pin, finish_pin, servo_pin, player_btn_pin = lane_configs[i]
+#         lanes.append(Lane(lane_id, start_pin, finish_pin, servo_pin, player_btn_pin, display_controller))
+#     
+#     # Create race manager
+#     race_manager = RaceManager(lanes, config.START_BUTTON_PIN, config.RESET_BUTTON_PIN, display_controller)
+#     
+#     return lanes, race_manager
 
 def main():
     """Main program entry point"""

@@ -19,7 +19,7 @@ RACE_TIMEOUT = 15000        # Maximum time for a race before auto-complete (15 s
 # Global defaults
 SERVO_OPEN_POSITION = 8200  # Default PWM value for servo in open position
 SERVO_CLOSED_POSITION = 2000  # Default PWM value for servo in closed position
-SERVO_HOLD_TIME = 500       # How long to hold servo in open position
+SERVO_HOLD_TIME = 900       # How long to hold servo in open position
 
 # Lane-specific servo positions (overrides defaults)
 LANE_SERVO_POSITIONS = [
@@ -56,11 +56,11 @@ DISPLAY_CYCLE_INTERVAL = 3000    # Time to display each piece of info (in millis
 # ------------------
 # Simulation mode settings
 # ------------------
-SIMULATION_MODE = True               # Enable/disable simulation mode
+SIMULATION_MODE = False               # Enable/disable simulation mode
 SIMULATION_REACTION_TIMES = [200, 300, 250, 225, 275]  # Reaction time in ms for each lane
-SIMULATION_RACE_TIMES = [4000, 3500, 3800, 4200, 3600]    # Total race time in ms for each lane
+SIMULATION_RACE_TIMES = [4000, 3900, 3800, 4100, 4600]    # Total race time in ms for each lane
 # Lane-specific simulation flags (False = use real hardware, True = simulate)
-LANE_SIMULATION_ENABLED = [False, False, True, True, True]  # First two lanes use real hardware
+LANE_SIMULATION_ENABLED = [False, True, True, True, True]  # First two lanes use real hardware
 # ------------------
 # WS2812B LED Configuration
 # ------------------
@@ -100,32 +100,32 @@ LED_MAPPING = {
         "red": 4
     },
     2: {  # Lane 2
-        "amber1": 8,    # Offset by LEDS_PER_LANE + SEPARATION_LEDS
-        "amber2": 9,
-        "amber3": 10,
-        "green": 11,
-        "red": 12
+        "amber1": 7,    # Offset by LEDS_PER_LANE + SEPARATION_LEDS
+        "amber2": 8,
+        "amber3": 9,
+        "green": 10,
+        "red": 11
     },
     3: {  # Lane 3
-        "amber1": 16,
-        "amber2": 17,
-        "amber3": 18,
-        "green": 19,
-        "red": 20
+        "amber1": 14,
+        "amber2": 15,
+        "amber3": 16,
+        "green": 17,
+        "red": 18
     },
     4: {  # Lane 4
-        "amber1": 24,
-        "amber2": 25,
-        "amber3": 26,
-        "green": 27,
-        "red": 28
+        "amber1": 21,
+        "amber2": 22,
+        "amber3": 23,
+        "green": 24,
+        "red": 25
     },
     5: {  # Lane 5
-        "amber1": 32,
-        "amber2": 33,
-        "amber3": 34,
-        "green": 35,
-        "red": 36
+        "amber1": 30,
+        "amber2": 31,
+        "amber3": 32,
+        "green": 33,
+        "red": 34
     }
 }
 
@@ -166,3 +166,22 @@ LANE5_PLAYER_BTN_PIN = 26
 # Control pins
 START_BUTTON_PIN = 6
 RESET_BUTTON_PIN = 7
+
+# ------------------
+# Phototransistor Sensor Settings
+# ------------------
+# ADC threshold for detecting blocked beam
+# Set this based on your testing results - values above this are considered "blocked"
+SENSOR_THRESHOLD = 7500
+
+# ADC pins for phototransistor sensors (optional - can be None if not using ADC)
+# Lane 1 sensors can use ADC for testing/calibration
+LANE1_START_ADC_PIN = 26    # ADC0
+LANE1_FINISH_ADC_PIN = 27   # ADC1
+# Lane 2 sensors use digital pins only
+LANE2_START_ADC_PIN = None
+LANE2_FINISH_ADC_PIN = None
+
+# Test mode settings
+SENSOR_DEBUG_MODE = False   # Enable/disable debugging output for sensors
+SENSOR_TEST_MODE = False    # When True, prioritize ADC readings over digital
