@@ -58,8 +58,13 @@ class Lane:
         self.last_start_blocked = False
         self.last_finish_blocked = False
         
+        self.prestaged = False
+        self.staged = False
+        
         # Track light states in memory
         self.tree_state = {
+            "prestage": 0,
+            "stage": 0,
             "amber1": 0,
             "amber2": 0,
             "amber3": 0,
@@ -198,6 +203,32 @@ class Lane:
             # return adc_blocked
         
         return digital_blocked
+
+#         def check_start_line(self):
+#             """Check if the start line has been crossed"""
+#             # For real sensors (not simulation)
+#             if not config.SIMULATION_MODE or (hasattr(config, 'LANE_SIMULATION_ENABLED') and 
+#                                            self.lane_id <= len(config.LANE_SIMULATION_ENABLED) and 
+#                                            not config.LANE_SIMULATION_ENABLED[self.lane_id-1]):
+#                 # Read the sensor value 
+#                 is_blocked = self.is_start_beam_blocked()
+#                 
+#                 # Debug output for sensor values
+#                 if hasattr(config, 'SENSOR_DEBUG_LEVEL') and config.SENSOR_DEBUG_LEVEL >= 1:
+#                     if config.SENSOR_DEBUG_LEVEL >= 2 or is_blocked != self.last_start_blocked:
+#                         print(f"Lane {self.lane_id}: Start beam {'BLOCKED' if is_blocked else 'OPEN'}, Digital value: {self.start_pin.value()}")
+#                         if hasattr(self, 'start_adc') and self.start_adc is not None:
+#                             adc_value = self.start_adc.read_u16()
+#                             print(f"Lane {self.lane_id}: Start ADC value: {adc_value}")
+#                 
+#                 # Detect transition from unblocked to blocked (beam break)
+#                 if not self.start_line_broken and is_blocked and not self.last_start_blocked:
+#                     print(f"Lane {self.lane_id}: Start beam break detected")
+#                     # Handle the beam break
+#                     self._handle_start_beam_break(time.ticks_ms())
+#                 
+#                 # Update last known state
+#                 self.last_start_blocked = is_blocked
 
     def check_start_line(self):
         """Check if the start line has been crossed"""

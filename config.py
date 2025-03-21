@@ -14,6 +14,15 @@ POST_RACE_DELAY = 2000      # Delay after race completion before allowing a new 
 RACE_TIMEOUT = 15000        # Maximum time for a race before auto-complete (15 seconds)
 
 # ------------------
+# Staging light settings
+# ------------------
+STAGING_LIGHTS_ENABLED = True               # Enable/disable staging lights
+STAGING_AUTO_SEQUENCE = True                # Automatically start sequence when all lanes staged
+STAGING_DELAY_MIN = 1000                    # Minimum delay after all staged (ms)
+STAGING_DELAY_MAX = 3000                    # Maximum delay after all staged (ms)
+RELEASE_TO_START_MODE = False               # When True, use "release to start" mode; otherwise use "push to start"
+
+# ------------------
 # Servo settings
 # ------------------
 # Global defaults
@@ -56,17 +65,17 @@ DISPLAY_CYCLE_INTERVAL = 3000    # Time to display each piece of info (in millis
 # ------------------
 # Simulation mode settings
 # ------------------
-SIMULATION_MODE = False               # Enable/disable simulation mode
+SIMULATION_MODE = True               # Enable/disable simulation mode
 SIMULATION_REACTION_TIMES = [200, 300, 250, 225, 275]  # Reaction time in ms for each lane
 SIMULATION_RACE_TIMES = [4000, 3900, 3800, 4100, 4600]    # Total race time in ms for each lane
 # Lane-specific simulation flags (False = use real hardware, True = simulate)
-LANE_SIMULATION_ENABLED = [False, True, True, True, True]  # First two lanes use real hardware
+LANE_SIMULATION_ENABLED = [True, True, True, True, True]  # First two lanes use real hardware
 # ------------------
 # WS2812B LED Configuration
 # ------------------
 WS2812B_PIN = 28           # GPIO pin connected to the WS2812B data line
 LEDS_PER_LANE = 5          # Number of LEDs per lane (amber1, amber2, amber3, green, red)
-SEPARATION_LEDS = 3        # Number of LEDs to use as separation between lanes
+SEPARATION_LEDS = 2        # Number of LEDs to use as separation between lanes
 
 # Total number of LEDs needed with separation
 NUM_LEDS = (LEDS_PER_LANE * NUM_LANES) + (SEPARATION_LEDS * (NUM_LANES - 1))
@@ -81,6 +90,8 @@ BLACK = 0x000000           # Off
 
 # WS2812B light tree sequence colors
 TREE_COLORS = {
+    "prestage": WHITE,
+    "stage": WHITE,
     "amber1": YELLOW,
     "amber2": YELLOW,
     "amber3": YELLOW,
@@ -93,34 +104,44 @@ TREE_COLORS = {
 # With 5 lanes, we need to map each lane's lights to the correct LED positions
 LED_MAPPING = {
     1: {  # Lane 1
-        "amber1": 0,
-        "amber2": 1,
-        "amber3": 2,
-        "green": 3,
-        "red": 4
+        "prestage": 0,
+        "stage": 1,
+        "amber1": 2,
+        "amber2": 3,
+        "amber3": 4,
+        "green": 5,
+        "red": 6
     },
     2: {  # Lane 2
-        "amber1": 7,    # Offset by LEDS_PER_LANE + SEPARATION_LEDS
-        "amber2": 8,
-        "amber3": 9,
-        "green": 10,
-        "red": 11
+        "prestage": 7,
+        "stage": 8,
+        "amber1": 9,    # Offset by LEDS_PER_LANE + SEPARATION_LEDS
+        "amber2": 10,
+        "amber3": 11,
+        "green": 12,
+        "red": 13
     },
     3: {  # Lane 3
-        "amber1": 14,
-        "amber2": 15,
-        "amber3": 16,
-        "green": 17,
-        "red": 18
+        "prestage": 14,
+        "stage": 15,
+        "amber1": 16,
+        "amber2": 17,
+        "amber3": 18,
+        "green": 19,
+        "red": 20
     },
     4: {  # Lane 4
-        "amber1": 21,
-        "amber2": 22,
-        "amber3": 23,
-        "green": 24,
-        "red": 25
+        "prestage": 21,
+        "stage": 22,
+        "amber1": 23,
+        "amber2": 24,
+        "amber3": 25,
+        "green": 26,
+        "red": 27
     },
     5: {  # Lane 5
+        "prestage": 28,
+        "stage": 29,
         "amber1": 30,
         "amber2": 31,
         "amber3": 32,
@@ -185,3 +206,8 @@ LANE2_FINISH_ADC_PIN = None
 # Test mode settings
 SENSOR_DEBUG_MODE = False   # Enable/disable debugging output for sensors
 SENSOR_TEST_MODE = False    # When True, prioritize ADC readings over digital
+
+# Debug settings for sensors
+SENSOR_DEBUG_LEVEL = 2  # 0=None, 1=Basic, 2=Verbose
+# Debug settings for sensors
+SENSOR_DEBUG_LEVEL = 2  # 0=None, 1=Basic, 2=Verbose

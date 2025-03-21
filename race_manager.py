@@ -30,6 +30,11 @@ class RaceManager:
         # Button event queue
         self.button_events = []
 
+        # Add staging variables
+        self.all_staged = False
+        self.staging_start_time = None
+        self.staging_delay = None
+
         # Set the global race_manager reference
         global race_manager
         race_manager = self
@@ -57,12 +62,21 @@ class RaceManager:
             # Show ready status on displays
             for i in range(len(self.lanes)):
                 self.display_controller.show_ready(i)
+                
+        # Reset staging variables
+        self.all_staged = False
+        self.staging_start_time = None
+        self.staging_delay = None
 
     def start_race(self):
         """Start a new race with the light sequence"""
         if not self.race_started and not self.tree_running:
             print("Starting tree sequence...")
-            self.reset_all_lights()  # Ensure all lights are off
+            
+            # Keep staging lights on if enabled, but reset other lights
+            for lane in self.lanes:
+                for light in ["amber1", "amber2", "amber3", "green", "red"]:
+                    lane.set_light(light, 0)
             
             # Add a delay before starting the sequence
             print(f"{config.PRE_START_DELAY//1000}-second delay before starting...")
@@ -80,6 +94,15 @@ class RaceManager:
     def update_tree(self):
         """Update the light tree sequence"""
         if not self.tree_running or self.current_stage is None:
+            # Check if staging delay has elapsed before starting race
+            if not self.race_started and self.all_staged and self.staging_start_time is not None:
+                if time.ticks_diff(time.ticks_ms(), self.staging_start_time) >= self.staging_delay:
+                    # Clear staging timer
+                    self.staging_start_time = None
+                    self.staging_delay = None
+                    
+                    # Start race sequence
+                    self.start_race()
             return
 
         current_time = time.ticks_ms()
@@ -167,21 +190,79 @@ class RaceManager:
 
     def check_player_buttons(self):
         """Check all player buttons for state changes"""
-        # Check all player buttons for state changes
         for i, lane in enumerate(self.lanes):
             current_state = lane.player_btn.value()
             
-            # Detect button press (transition from not pressed to pressed)
+            # Button just pressed (transition from 1 to 0)
             if current_state == 0 and self.player_btn_states[i] == 1:
-                # Queue button event for processing
-                self.button_events.append(('player', i))
-                print(f"Lane {lane.lane_id}: Player button press detected and queued")
+                if not self.race_started and config.STAGING_LIGHTS_ENABLED:
+                    # If race hasn't started, activate staging lights
+                    if not lane.prestaged:
+                        lane.prestaged = True
+                        lane.set_light("prestage", 1)
+                        print(f"Lane {lane.lane_id}: Pre-staged")
+                        
+                    # After pre-staged, move to staged
+                    elif not lane.staged:
+                        lane.staged = True
+                        lane.set_light("stage", 1)
+                        print(f"Lane {lane.lane_id}: Staged")
+                        
+                        # Check if all lanes are staged
+                        self.check_all_staged()
+                
+                # If race has started and tree sequence is complete, fire servo (push-to-start mode)
+                elif self.race_started and self.tree_sequence_complete and not config.RELEASE_TO_START_MODE:
+                    self.button_events.append(('player', i))
+                    print(f"Lane {lane.lane_id}: Player button press detected and queued")
+                    
+            # Button just released (transition from 0 to 1)
+            elif current_state == 1 and self.player_btn_states[i] == 0:
+                # In release-to-start mode, fire servo on button release
+                if self.race_started and self.tree_sequence_complete and config.RELEASE_TO_START_MODE:
+                    self.button_events.append(('player', i))
+                    print(f"Lane {lane.lane_id}: Player button release detected and queued")
+                    
+                # If button released before race starts, turn off staging lights
+                elif not self.race_started:
+                    if lane.staged or lane.prestaged:
+                        print(f"Lane {lane.lane_id}: Staging cancelled")
+                        lane.staged = False
+                        lane.prestaged = False
+                        lane.set_light("stage", 0)
+                        lane.set_light("prestage", 0)
             
             # Update last known state
             self.player_btn_states[i] = current_state
         
         # Process any queued button events
         self.process_button_events()
+    
+    def check_all_staged(self):
+        """Check if all lanes are staged and start sequence timer if needed"""
+        if self.race_started or not config.STAGING_AUTO_SEQUENCE:
+            return
+            
+        # Check if all lanes are staged
+        all_staged = True
+        for lane in self.lanes:
+            if not lane.staged:
+                all_staged = False
+                break
+                
+        # If all lanes are now staged and we haven't started the timer yet
+        if all_staged and not self.all_staged:
+            self.all_staged = True
+            print("All lanes staged! Starting delay sequence...")
+            self.staging_start_time = time.ticks_ms()
+            
+            # Set random staging delay
+            import random
+            self.staging_delay = random.randint(
+                config.STAGING_DELAY_MIN, 
+                config.STAGING_DELAY_MAX
+            )
+            print(f"Staging delay: {self.staging_delay}ms")
     
     def process_button_events(self):
         """Process any queued button events"""

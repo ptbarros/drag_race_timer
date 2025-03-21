@@ -86,28 +86,6 @@ def display_startup_sequence():
                 pixels_show()
                 time.sleep_ms(50)
     
-     # Include the staging lights in the sequence
-    lights = ["prestage", "stage", "amber1", "amber2", "amber3", "green", "red"]
-    
-    # Test each light in sequence for both lanes
-    for lane_id in [1, 2]:
-        print(f"Testing lights for Lane {lane_id}")
-        for light in lights:
-            # Skip if light is not in mapping
-            if light not in config.LED_MAPPING[lane_id]:
-                continue
-                
-            # Turn on the light
-            led_idx = config.LED_MAPPING[lane_id][light]
-            pixels_set(led_idx, config.TREE_COLORS[light])
-            pixels_show()
-            time.sleep_ms(300)
-            
-            # Turn off the light
-            pixels_set(led_idx, config.BLACK)
-            pixels_show()
-            time.sleep_ms(100)
-    
     # Return to all off
     pixels_fill(config.BLACK)
     pixels_show()
