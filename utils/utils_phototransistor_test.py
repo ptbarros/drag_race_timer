@@ -8,8 +8,8 @@ import config
 ADC_PINS = [
     {"name": "Lane 1 Start", "pin": 26},  # ADC0
     {"name": "Lane 1 Finish", "pin": 27}, # ADC1
-    {"name": "Lane 2 Start", "pin": 26},  # Reusing ADC0 for testing
-    {"name": "Lane 2 Finish", "pin": 27}  # Reusing ADC1 for testing
+#    {"name": "Lane 2 Start", "pin": 26},  # Reusing ADC0 for testing
+#    {"name": "Lane 2 Finish", "pin": 27}  # Reusing ADC1 for testing
 ]
 
 # Threshold for detecting blocked vs unblocked
