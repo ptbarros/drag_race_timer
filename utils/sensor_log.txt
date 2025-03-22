@@ -1,0 +1,969 @@
+=== Phototransistor Test Started at (2025, 3, 21, 17, 15, 56, 4, 80) ===
+Digital pins: Start=0, Finish=1
+Analog pins: Start=26, Finish=27
+(2025, 3, 21, 17, 15, 56, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 992     | 992     | 992     | 0         
+Lane 1 Finish   | OPEN    | 688     | 688     | 688     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 15, 57, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 796     | 720     | 992     | 0         
+Lane 1 Finish   | OPEN    | 704     | 592     | 736     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 15, 58, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 816     | 720     | 992     | 0         
+Lane 1 Finish   | OPEN    | 723     | 592     | 752     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 15, 59, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 816     | 720     | 992     | 0         
+Lane 1 Finish   | OPEN    | 697     | 592     | 752     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 0, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 816     | 720     | 992     | 0         
+Lane 1 Finish   | OPEN    | 729     | 592     | 768     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 1, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 825     | 720     | 992     | 0         
+Lane 1 Finish   | OPEN    | 713     | 592     | 768     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 2, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 867     | 720     | 992     | 0         
+Lane 1 Finish   | OPEN    | 784     | 592     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 3, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 809     | 688     | 992     | 0         
+Lane 1 Finish   | OPEN    | 710     | 592     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 4, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 819     | 688     | 992     | 0         
+Lane 1 Finish   | OPEN    | 678     | 592     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 5, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 812     | 688     | 992     | 0         
+Lane 1 Finish   | OPEN    | 691     | 592     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 6, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 604     | 560     | 992     | 0         
+Lane 1 Finish   | OPEN    | 694     | 592     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 7, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 736     | 480     | 992     | 0         
+Lane 1 Finish   | OPEN    | 672     | 592     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 8, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 732     | 480     | 992     | 0         
+Lane 1 Finish   | OPEN    | 665     | 576     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 9, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 774     | 480     | 992     | 0         
+Lane 1 Finish   | OPEN    | 675     | 560     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 10, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 752     | 480     | 992     | 0         
+Lane 1 Finish   | OPEN    | 665     | 528     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 11, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 396     | 304     | 992     | 0         
+Lane 1 Finish   | OPEN    | 611     | 512     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 12, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 387     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 608     | 496     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 13, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 358     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 601     | 496     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 14, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 636     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 684     | 496     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 15, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 595     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 451     | 320     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 16, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 768     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 553     | 320     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 17, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 729     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 531     | 320     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 18, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 723     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 550     | 320     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 19, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 742     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 566     | 320     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 20, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 748     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 544     | 320     | 816     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 21, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 748     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 822     | 320     | 848     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 22, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 758     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 822     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 23, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 768     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 841     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 24, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 768     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 828     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 25, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 745     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 828     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 26, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 761     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 848     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 27, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 771     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 825     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 28, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 742     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 588     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 29, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 748     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 592     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 30, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 720     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 582     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 31, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 745     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 576     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 32, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 838     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 601     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 33, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 848     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 611     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 34, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 841     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 611     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 35, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 864     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 614     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 36, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 595     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 614     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 37, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 752     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 566     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 38, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 819     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 777     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 39, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 748     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 800     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 40, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 774     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 825     | 320     | 912     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 41, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 758     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 812     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 42, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 758     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 572     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 43, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 876     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 595     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 44, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 742     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 572     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 45, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 793     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 646     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 46, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 780     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 649     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 47, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 748     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 624     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 48, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 585     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 630     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 49, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 604     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 608     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 50, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 774     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 649     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 51, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 803     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 681     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 52, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 828     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 710     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 53, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 832     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 726     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 54, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 816     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 697     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 55, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 825     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 707     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 56, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 803     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 694     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 57, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 835     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 723     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 58, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 816     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 707     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 16, 59, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 806     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 716     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 17, 0, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 832     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 716     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 17, 1, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 819     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 694     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 17, 2, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 819     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 720     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 17, 3, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 803     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 697     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------
+(2025, 3, 21, 17, 17, 4, 4, 80): 
+--- SENSOR SUMMARY ---
+DIGITAL READINGS:
+Lane 1 Start (GPIO 0): LOW/OPEN (Raw value: 0)
+Lane 1 Finish (GPIO 1): LOW/OPEN (Raw value: 0)
+
+ANALOG READINGS:
+Sensor Name      | Current | Value  | Min     | Max     | Transitions
+----------------- --------- ------- --------- --------- ------------
+Lane 1 Start    | OPEN    | 796     | 272     | 992     | 0         
+Lane 1 Finish   | OPEN    | 694     | 320     | 928     | 0         
+----------------------------------------------------------
+Analog threshold: 7500 (values above = BLOCKED)
+----------------------------------------------------------

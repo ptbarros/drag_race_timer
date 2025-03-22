@@ -63,13 +63,13 @@ DISPLAY_CYCLE_ENABLED = True     # Enable cycling between different info on seco
 DISPLAY_CYCLE_INTERVAL = 3000    # Time to display each piece of info (in milliseconds)
 
 # ------------------
-# Simulation mode settings
+# Simulation settings
 # ------------------
-SIMULATION_MODE = True               # Enable/disable simulation mode
-SIMULATION_REACTION_TIMES = [200, 300, 250, 225, 275]  # Reaction time in ms for each lane
-SIMULATION_RACE_TIMES = [4000, 3900, 3800, 4100, 4600]    # Total race time in ms for each lane
 # Lane-specific simulation flags (False = use real hardware, True = simulate)
-LANE_SIMULATION_ENABLED = [True, True, True, True, True]  # First two lanes use real hardware
+LANE_SIMULATION_ENABLED = [False, True, True, True, True]  # Lane 1 uses hardware, others simulated
+SIMULATION_REACTION_TIMES = [200, 300, 250, 225, 275]  # Reaction time in ms for each lane
+SIMULATION_RACE_TIMES = [4000, 3900, 3800, 4100, 4600]  # Total race time in ms for each lane
+
 # ------------------
 # WS2812B LED Configuration
 # ------------------
@@ -189,25 +189,6 @@ START_BUTTON_PIN = 6
 RESET_BUTTON_PIN = 7
 
 # ------------------
-# Phototransistor Sensor Settings
+# Debug settings
 # ------------------
-# ADC threshold for detecting blocked beam
-# Set this based on your testing results - values above this are considered "blocked"
-SENSOR_THRESHOLD = 7500
-
-# ADC pins for phototransistor sensors (optional - can be None if not using ADC)
-# Lane 1 sensors can use ADC for testing/calibration
-LANE1_START_ADC_PIN = 26    # ADC0
-LANE1_FINISH_ADC_PIN = 27   # ADC1
-# Lane 2 sensors use digital pins only
-LANE2_START_ADC_PIN = None
-LANE2_FINISH_ADC_PIN = None
-
-# Test mode settings
 SENSOR_DEBUG_MODE = False   # Enable/disable debugging output for sensors
-SENSOR_TEST_MODE = False    # When True, prioritize ADC readings over digital
-
-# Debug settings for sensors
-SENSOR_DEBUG_LEVEL = 2  # 0=None, 1=Basic, 2=Verbose
-# Debug settings for sensors
-SENSOR_DEBUG_LEVEL = 2  # 0=None, 1=Basic, 2=Verbose

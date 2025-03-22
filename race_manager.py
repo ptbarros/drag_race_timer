@@ -187,6 +187,9 @@ class RaceManager:
         for lane in self.lanes:
             for light in lane.tree_state:
                 lane.tree_state[light] = 0
+                
+            # This function needs to be updated in race_manager.py
+# You don't need to replace the entire file, just update this method
 
     def check_player_buttons(self):
         """Check all player buttons for state changes"""
@@ -211,15 +214,17 @@ class RaceManager:
                         # Check if all lanes are staged
                         self.check_all_staged()
                 
-                # If race has started and tree sequence is complete, fire servo (push-to-start mode)
-                elif self.race_started and self.tree_sequence_complete and not config.RELEASE_TO_START_MODE:
+                # MODIFIED: Allow button press once race has started, regardless of tree sequence state
+                # This allows false starts during amber lights
+                elif self.race_started and not config.RELEASE_TO_START_MODE:
+                    # Queue the button press for processing
                     self.button_events.append(('player', i))
                     print(f"Lane {lane.lane_id}: Player button press detected and queued")
                     
             # Button just released (transition from 0 to 1)
             elif current_state == 1 and self.player_btn_states[i] == 0:
                 # In release-to-start mode, fire servo on button release
-                if self.race_started and self.tree_sequence_complete and config.RELEASE_TO_START_MODE:
+                if self.race_started and config.RELEASE_TO_START_MODE:
                     self.button_events.append(('player', i))
                     print(f"Lane {lane.lane_id}: Player button release detected and queued")
                     
@@ -236,7 +241,57 @@ class RaceManager:
             self.player_btn_states[i] = current_state
         
         # Process any queued button events
-        self.process_button_events()
+        self.process_button_events()    
+
+#     def check_player_buttons(self):
+#         """Check all player buttons for state changes"""
+#         for i, lane in enumerate(self.lanes):
+#             current_state = lane.player_btn.value()
+#             
+#             # Button just pressed (transition from 1 to 0)
+#             if current_state == 0 and self.player_btn_states[i] == 1:
+#                 if not self.race_started and config.STAGING_LIGHTS_ENABLED:
+#                     # If race hasn't started, activate staging lights
+#                     if not lane.prestaged:
+#                         lane.prestaged = True
+#                         lane.set_light("prestage", 1)
+#                         print(f"Lane {lane.lane_id}: Pre-staged")
+#                         
+#                     # After pre-staged, move to staged
+#                     elif not lane.staged:
+#                         lane.staged = True
+#                         lane.set_light("stage", 1)
+#                         print(f"Lane {lane.lane_id}: Staged")
+#                         
+#                         # Check if all lanes are staged
+#                         self.check_all_staged()
+#                 
+#                 # If race has started and tree sequence is complete, fire servo (push-to-start mode)
+#                 elif self.race_started and self.tree_sequence_complete and not config.RELEASE_TO_START_MODE:
+#                     self.button_events.append(('player', i))
+#                     print(f"Lane {lane.lane_id}: Player button press detected and queued")
+#                     
+#             # Button just released (transition from 0 to 1)
+#             elif current_state == 1 and self.player_btn_states[i] == 0:
+#                 # In release-to-start mode, fire servo on button release
+#                 if self.race_started and self.tree_sequence_complete and config.RELEASE_TO_START_MODE:
+#                     self.button_events.append(('player', i))
+#                     print(f"Lane {lane.lane_id}: Player button release detected and queued")
+#                     
+#                 # If button released before race starts, turn off staging lights
+#                 elif not self.race_started:
+#                     if lane.staged or lane.prestaged:
+#                         print(f"Lane {lane.lane_id}: Staging cancelled")
+#                         lane.staged = False
+#                         lane.prestaged = False
+#                         lane.set_light("stage", 0)
+#                         lane.set_light("prestage", 0)
+#             
+#             # Update last known state
+#             self.player_btn_states[i] = current_state
+#         
+#         # Process any queued button events
+#         self.process_button_events()
     
     def check_all_staged(self):
         """Check if all lanes are staged and start sequence timer if needed"""

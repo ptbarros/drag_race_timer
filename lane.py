@@ -1,38 +1,40 @@
-# Hybrid Lane class for Raspberry Pi Pico Drag Race Controller
-# Supports both digital and ADC inputs for phototransistors
-# Uses direct connected phototransistors (Collector to GND, Emitter to pin)
-from machine import Pin, PWM, ADC
+# Lane class for Raspberry Pi Pico Drag Race Controller
+# Updated to use digital pins with internal pull-up resistors only
+from machine import Pin, PWM
 import time
 import config
 from led.ws2812b import set_lane_light
 
 class Lane:
-    def __init__(self, lane_id, start_pin, finish_pin, start_adc_pin=None, finish_adc_pin=None, 
-                 servo_pin=None, player_btn_pin=None, display_controller=None):
+    def __init__(self, lane_id, start_pin, finish_pin, servo_pin=None, player_btn_pin=None, display_controller=None):
+        """
+        Initialize a Lane with digital pins using pull-up resistors
+        
+        Parameters:
+        lane_id (int): Lane identifier (1-based)
+        start_pin (int): GPIO pin number for start sensor
+        finish_pin (int): GPIO pin number for finish sensor
+        servo_pin (int, optional): GPIO pin number for servo
+        player_btn_pin (int, optional): GPIO pin number for player button
+        display_controller (DisplayController, optional): Reference to display controller
+        """
         self.lane_id = lane_id
         
-        # Initialize digital pins for start and finish sensors
-        self.start_pin = Pin(start_pin, Pin.IN)  # No pull-up
-        self.finish_pin = Pin(finish_pin, Pin.IN) # No pull-up
-        print(f"Lane {lane_id}: Initialized digital sensors on GPIO{start_pin} and GPIO{finish_pin}")
+        # Determine if this lane should use simulation
+        self.use_simulation = False  # Default to hardware mode
+        if hasattr(config, 'LANE_SIMULATION_ENABLED') and self.lane_id <= len(config.LANE_SIMULATION_ENABLED):
+            self.use_simulation = config.LANE_SIMULATION_ENABLED[self.lane_id-1]
         
-        # Initialize ADC pins for start and finish sensors (if provided)
-        self.start_adc = None
-        self.finish_adc = None
+        # Print simulation status for this lane
+        if self.use_simulation:
+            print(f"Lane {lane_id}: SIMULATION MODE ACTIVE")
+        else:
+            print(f"Lane {lane_id}: HARDWARE MODE ACTIVE")
         
-        if start_adc_pin is not None:
-            try:
-                self.start_adc = ADC(Pin(start_adc_pin))
-                print(f"Lane {lane_id}: Initialized start ADC sensor on ADC{start_adc_pin}")
-            except Exception as e:
-                print(f"Lane {lane_id}: Error initializing start ADC: {e}")
-        
-        if finish_adc_pin is not None:
-            try:
-                self.finish_adc = ADC(Pin(finish_adc_pin))
-                print(f"Lane {lane_id}: Initialized finish ADC sensor on ADC{finish_adc_pin}")
-            except Exception as e:
-                print(f"Lane {lane_id}: Error initializing finish ADC: {e}")
+        # Initialize digital pins for start and finish sensors WITH pull-up resistors
+        self.start_pin = Pin(start_pin, Pin.IN, Pin.PULL_UP)
+        self.finish_pin = Pin(finish_pin, Pin.IN, Pin.PULL_UP)
+        print(f"Lane {lane_id}: Initialized digital sensors on GPIO{start_pin} and GPIO{finish_pin} with PULL_UP")
         
         # Initialize player button and servo
         if player_btn_pin is not None:
@@ -48,11 +50,11 @@ class Lane:
             
         self.display_controller = display_controller
         
-        # Threshold for detecting when beam is blocked (adjust based on testing)
-        self.adc_threshold = config.SENSOR_THRESHOLD
-        
-        # Digital pin state that indicates beam is blocked (HIGH/1 in your case)
-        self.digital_blocked_state = 1  # HIGH means blocked with your wiring
+        # Digital pin state that indicates beam is blocked
+        # With PULL_UP resistors:
+        # - When beam is clear (phototransistor conducting): reads LOW (0)
+        # - When beam is broken (phototransistor not conducting): reads HIGH (1)
+        self.digital_blocked_state = 1  # HIGH (1) means blocked with pull-up configuration
         
         # Last known sensor states
         self.last_start_blocked = False
@@ -102,8 +104,6 @@ class Lane:
         
         # Debug variables
         self.debug_mode = False  # Set to True to enable debug printing
-        self.last_start_adc_value = 0
-        self.last_finish_adc_value = 0
 
     def set_light(self, light_name, state):
         """Set a light in the tree to on (1) or off (0) and update the LED strip"""
@@ -129,7 +129,7 @@ class Lane:
             self.gate_released = True
             
             # In simulation mode, record when the player pressed the button
-            if config.SIMULATION_MODE:
+            if self.use_simulation:
                 self.player_pressed_time = time.ticks_ms()
                 self.start_sim_scheduled = True
     
@@ -158,6 +158,10 @@ class Lane:
         for light in self.tree_state:
             self.set_light(light, 0)
         
+        # Reset staging variables
+        self.prestaged = False
+        self.staged = False
+        
         # Reset simulation variables
         self.player_pressed_time = None
         self.start_sim_scheduled = False
@@ -167,73 +171,19 @@ class Lane:
         self.servo_closing_pending = False
 
     def is_start_beam_blocked(self):
-        """Check if start beam is blocked using digital or ADC input"""
-        # First try digital pin
-        digital_blocked = self.start_pin.value() == self.digital_blocked_state
-        
-        # If ADC is available, read it for debugging/testing
-        if self.start_adc is not None:
-            value = self.start_adc.read_u16()
-            self.last_start_adc_value = value
-            adc_blocked = value > self.adc_threshold
-            
-            if self.debug_mode and digital_blocked != adc_blocked:
-                print(f"Lane {self.lane_id}: Start sensor disagreement - Digital: {digital_blocked}, ADC: {adc_blocked} ({value})")
-            
-            # For test modes, could return the ADC-based value instead
-            # return adc_blocked
-        
-        return digital_blocked
+        """Check if start beam is blocked using digital input with pull-up resistor"""
+        # With pull-up resistors, HIGH (1) means beam is blocked
+        return self.start_pin.value() == self.digital_blocked_state
 
     def is_finish_beam_blocked(self):
-        """Check if finish beam is blocked using digital or ADC input"""
-        # First try digital pin
-        digital_blocked = self.finish_pin.value() == self.digital_blocked_state
-        
-        # If ADC is available, read it for debugging/testing
-        if self.finish_adc is not None:
-            value = self.finish_adc.read_u16()
-            self.last_finish_adc_value = value
-            adc_blocked = value > self.adc_threshold
-            
-            if self.debug_mode and digital_blocked != adc_blocked:
-                print(f"Lane {self.lane_id}: Finish sensor disagreement - Digital: {digital_blocked}, ADC: {adc_blocked} ({value})")
-            
-            # For test modes, could return the ADC-based value instead
-            # return adc_blocked
-        
-        return digital_blocked
-
-#         def check_start_line(self):
-#             """Check if the start line has been crossed"""
-#             # For real sensors (not simulation)
-#             if not config.SIMULATION_MODE or (hasattr(config, 'LANE_SIMULATION_ENABLED') and 
-#                                            self.lane_id <= len(config.LANE_SIMULATION_ENABLED) and 
-#                                            not config.LANE_SIMULATION_ENABLED[self.lane_id-1]):
-#                 # Read the sensor value 
-#                 is_blocked = self.is_start_beam_blocked()
-#                 
-#                 # Debug output for sensor values
-#                 if hasattr(config, 'SENSOR_DEBUG_LEVEL') and config.SENSOR_DEBUG_LEVEL >= 1:
-#                     if config.SENSOR_DEBUG_LEVEL >= 2 or is_blocked != self.last_start_blocked:
-#                         print(f"Lane {self.lane_id}: Start beam {'BLOCKED' if is_blocked else 'OPEN'}, Digital value: {self.start_pin.value()}")
-#                         if hasattr(self, 'start_adc') and self.start_adc is not None:
-#                             adc_value = self.start_adc.read_u16()
-#                             print(f"Lane {self.lane_id}: Start ADC value: {adc_value}")
-#                 
-#                 # Detect transition from unblocked to blocked (beam break)
-#                 if not self.start_line_broken and is_blocked and not self.last_start_blocked:
-#                     print(f"Lane {self.lane_id}: Start beam break detected")
-#                     # Handle the beam break
-#                     self._handle_start_beam_break(time.ticks_ms())
-#                 
-#                 # Update last known state
-#                 self.last_start_blocked = is_blocked
+        """Check if finish beam is blocked using digital input with pull-up resistor"""
+        # With pull-up resistors, HIGH (1) means beam is blocked
+        return self.finish_pin.value() == self.digital_blocked_state
 
     def check_start_line(self):
         """Check if the start line has been crossed"""
         # In simulation mode, check if it's time to simulate a start beam break
-        if config.SIMULATION_MODE and self.start_sim_scheduled and not self.start_line_broken:
+        if self.use_simulation and self.start_sim_scheduled and not self.start_line_broken:
             current_time = time.ticks_ms()
             # Get the reaction time for this lane (default to first lane if index is out of bounds)
             sim_reaction_time = config.SIMULATION_REACTION_TIMES[self.lane_id-1] if self.lane_id <= len(config.SIMULATION_REACTION_TIMES) else config.SIMULATION_REACTION_TIMES[0]
@@ -244,28 +194,29 @@ class Lane:
                 self.start_sim_scheduled = False
                 self.finish_sim_scheduled = True  # Schedule finish beam break
                 return  # Early return after simulating start beam
+                
+            # Return early - in simulation mode, we don't check physical sensors
+            return
         
-        # Regular start beam check with digital/ADC
-        is_blocked = self.is_start_beam_blocked()
-        
-        # Detect transition from unblocked to blocked (beam break)
-        if not self.start_line_broken and is_blocked and not self.last_start_blocked:
-            # Car has broken the start beam
-            self._handle_start_beam_break(time.ticks_ms())
-        
-        # Update last known state
-        self.last_start_blocked = is_blocked
+        # Only check physical sensors if NOT in simulation mode 
+        if not self.use_simulation:
+            # Regular start beam check with digital pin using pull-up
+            is_blocked = self.is_start_beam_blocked()
+            
+            # Detect transition from unblocked to blocked (beam break)
+            if not self.start_line_broken and is_blocked and not self.last_start_blocked:
+                # Car has broken the start beam
+                self._handle_start_beam_break(time.ticks_ms())
+            
+            # Update last known state
+            self.last_start_blocked = is_blocked
 
     def _handle_start_beam_break(self, current_time):
         """Internal helper to handle start beam break logic"""
         self.start_line_broken = True
         self.start_beam_time = current_time
         
-        print(f"Lane {self.lane_id}: {'Simulated ' if config.SIMULATION_MODE else ''}start beam break")
-        
-        # If ADC is available, print the value
-        if self.start_adc is not None:
-            print(f"Lane {self.lane_id}: Start ADC value: {self.last_start_adc_value}")
+        print(f"Lane {self.lane_id}: {'Simulated ' if self.use_simulation else ''}start beam break")
             
         # Check for false start if tree is running but green is not lit
         from race_manager import race_manager  # Import here to avoid circular import
@@ -291,7 +242,7 @@ class Lane:
     def check_finish(self):
         """Check if the finish line has been crossed"""
         # In simulation mode, check if it's time to simulate a finish beam break
-        if config.SIMULATION_MODE and self.finish_sim_scheduled and not self.finish_line_broken:
+        if self.use_simulation and self.finish_sim_scheduled and not self.finish_line_broken:
             current_time = time.ticks_ms()
             # Get the race time for this lane (default to first lane if index is out of bounds)
             sim_race_time = config.SIMULATION_RACE_TIMES[self.lane_id-1] if self.lane_id <= len(config.SIMULATION_RACE_TIMES) else config.SIMULATION_RACE_TIMES[0]
@@ -301,27 +252,28 @@ class Lane:
                 self._handle_finish_beam_break(current_time)
                 self.finish_sim_scheduled = False
                 return  # Early return after simulating finish beam
+                
+            # Return early - in simulation mode, we don't check physical sensors
+            return
         
-        # Regular finish beam check with digital/ADC
-        is_blocked = self.is_finish_beam_blocked()
-        
-        # Detect transition from unblocked to blocked (beam break)
-        if not self.finish_line_broken and is_blocked and not self.last_finish_blocked:
-            # Car has broken the finish beam
-            self._handle_finish_beam_break(time.ticks_ms())
-        
-        # Update last known state
-        self.last_finish_blocked = is_blocked
+        # Only check physical sensors if NOT in simulation mode
+        if not self.use_simulation:
+            # Regular finish beam check with digital pin
+            is_blocked = self.is_finish_beam_blocked()
+            
+            # Detect transition from unblocked to blocked (beam break)
+            if not self.finish_line_broken and is_blocked and not self.last_finish_blocked:
+                # Car has broken the finish beam
+                self._handle_finish_beam_break(time.ticks_ms())
+            
+            # Update last known state
+            self.last_finish_blocked = is_blocked
 
     def _handle_finish_beam_break(self, current_time):
         """Internal helper to handle finish beam break logic"""
         self.finish_line_broken = True
         
-        print(f"Lane {self.lane_id}: {'Simulated ' if config.SIMULATION_MODE else ''}finish beam break")
-        
-        # If ADC is available, print the value
-        if self.finish_adc is not None:
-            print(f"Lane {self.lane_id}: Finish ADC value: {self.last_finish_adc_value}")
+        print(f"Lane {self.lane_id}: {'Simulated ' if self.use_simulation else ''}finish beam break")
         
         # Only record finish time if we have a start time
         if self.start_time is not None:
