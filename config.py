@@ -71,11 +71,16 @@ SIMULATION_REACTION_TIMES = [200, 300, 250, 225, 275]  # Reaction time in ms for
 SIMULATION_RACE_TIMES = [4000, 3900, 3800, 4100, 4600]  # Total race time in ms for each lane
 
 # ------------------
+# Startup animation settings
+# ------------------
+STARTUP_ANIMATION_ENABLED = True    # Set to False to disable startup animation
+
+# ------------------
 # WS2812B LED Configuration
 # ------------------
 WS2812B_PIN = 28           # GPIO pin connected to the WS2812B data line
-LEDS_PER_LANE = 5          # Number of LEDs per lane (amber1, amber2, amber3, green, red)
-SEPARATION_LEDS = 2        # Number of LEDs to use as separation between lanes
+LEDS_PER_LANE = 7          # Number of LEDs per lane (amber1, amber2, amber3, green, red)
+SEPARATION_LEDS = 0        # Number of LEDs to use as separation between lanes
 
 # Total number of LEDs needed with separation
 NUM_LEDS = (LEDS_PER_LANE * NUM_LANES) + (SEPARATION_LEDS * (NUM_LANES - 1))

@@ -1,6 +1,6 @@
 # Raspberry Pi Pico W Drag Race Controller
 
-A comprehensive multi-lane drag race timing system for Hot Wheels or similar model cars, built on the Raspberry Pi Pico W platform.
+A comprehensive 2-lane drag race timing system for Hot Wheels or similar model cars, built on the Raspberry Pi Pico W platform.
 
 ## Project Structure
 
@@ -30,11 +30,10 @@ race_controller/
   - Precise reaction time measurement
   - Race time measurement from green light to finish
   - False start (red light) detection
-  - Button presses during amber lights for realistic anticipation
 
-- **Multi-Lane Support**:
-  - Independent timing for up to 5 lanes
-  - Position tracking (1st, 2nd, 3rd, etc.)
+- **Dual Lane Support**:
+  - Independent timing for each lane
+  - Position tracking (1st, 2nd)
   - Independent servo control for starting gates
 
 - **Display System**:
@@ -54,34 +53,19 @@ race_controller/
   - Event-based button handling
 
 - **Simulation Mode**:
-  - Configurable per-lane simulation
-  - Mix of physical and simulated lanes
+  - Test functionality without physical hardware
   - Configurable reaction and race times
   - Simulated beam breaks based on timing
 
 ## Hardware Requirements
 
 - Raspberry Pi Pico W
-- Start/finish line sensors (phototransistors with direct GPIO connection)
+- Start/finish line sensors (normally-closed beam break sensors)
 - WS2812B LED strip
 - HT16K33-based 7-segment displays (optional)
 - SG90 servos for starting gates
 - Pushbuttons for controls
 - 5V power supply for LED strip
-
-## Sensor Setup
-
-The project uses phototransistors in a simplified digital configuration:
-
-- **Digital Sensor Wiring**:
-  - Phototransistor collector connected to GPIO pin
-  - Phototransistor emitter connected to GND
-  - Internal pull-up resistors enabled (no external resistors needed)
-  - LED beam across track to phototransistor for start/finish detection
-
-- **Detection Logic**:
-  - When beam is clear (phototransistor conducting): Reads LOW (0)
-  - When beam is broken (phototransistor not conducting): Reads HIGH (1)
 
 ## Pin Assignments
 
@@ -98,24 +82,6 @@ The pins are defined in `config.py` and can be customized:
   - Finish sensor: GPIO 3
   - Servo: GPIO 9
   - Player button: GPIO 5
-
-- **Lane 3**:
-  - Start sensor: GPIO 10
-  - Finish sensor: GPIO 11
-  - Servo: GPIO 12
-  - Player button: GPIO 13
-
-- **Lane 4**:
-  - Start sensor: GPIO 14
-  - Finish sensor: GPIO 15
-  - Servo: GPIO 16
-  - Player button: GPIO 17
-
-- **Lane 5**:
-  - Start sensor: GPIO 18
-  - Finish sensor: GPIO 19
-  - Servo: GPIO 22
-  - Player button: GPIO 26
 
 - **Control**:
   - Start race button: GPIO 6
@@ -138,18 +104,7 @@ All settings can be adjusted in `config.py`:
 - Servo positions
 - Display settings
 - LED configuration
-- Per-lane simulation settings
-
-### Simulation Configuration
-
-Configure simulation on a per-lane basis:
-
-```python
-# Lane-specific simulation flags (False = use hardware, True = simulate)
-LANE_SIMULATION_ENABLED = [False, True, True, True, True]  # Lane 1 uses hardware, others simulated
-```
-
-This allows mixing real hardware with simulated lanes for testing or when building the system gradually.
+- Simulation mode
 
 ## Usage
 
@@ -157,10 +112,7 @@ This allows mixing real hardware with simulated lanes for testing or when buildi
 2. Press the reset button to initialize
 3. Place cars at the starting gates
 4. Press start to begin the light sequence
-5. Players press their buttons when they want to release cars
-   - Pressing before green light causes a false start (red light)
-   - Reaction time is measured from green light to button press
-   - Race time is measured from green light to finish line
+5. Players press their buttons to release cars when the green light comes on
 6. Results are displayed on the 7-segment displays and via LED animations
 
 ## Extending the Project

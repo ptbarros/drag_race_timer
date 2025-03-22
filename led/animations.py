@@ -5,6 +5,13 @@ from led.ws2812b import pixels_set, pixels_show, pixels_fill
 
 def display_startup_sequence():
     """Display a startup animation on the LED strip"""
+    # Check if startup animation is disabled
+    if hasattr(config, 'STARTUP_ANIMATION_ENABLED') and not config.STARTUP_ANIMATION_ENABLED:
+        # Just turn off all LEDs and return
+        pixels_fill(config.BLACK)
+        pixels_show()
+        return
+    
     # Clear all LEDs
     pixels_fill(config.BLACK)
     pixels_show()
@@ -16,8 +23,8 @@ def display_startup_sequence():
     for lane_idx in range(1, config.NUM_LANES + 1):
         # Get the starting LED for this lane from the mapping
         if lane_idx in config.LED_MAPPING:
-            # Use first LED (amber1) as reference for lane's starting position
-            start_led = config.LED_MAPPING[lane_idx]["amber1"]
+            # Use prestage as reference for lane's starting position (instead of amber1)
+            start_led = config.LED_MAPPING[lane_idx]["prestage"]
             lane_color = lane_colors[(lane_idx - 1) % len(lane_colors)]
             
             # Light up this lane's LEDs one by one
@@ -26,17 +33,18 @@ def display_startup_sequence():
                 pixels_show()
                 time.sleep_ms(50)  # Faster animation to accommodate all lanes
     
-    # Flash all separators to highlight lane divisions
-    for lane_idx in range(1, config.NUM_LANES):
-        # Calculate separator start position (end of one lane to start of next)
-        separator_start = (lane_idx * config.LEDS_PER_LANE) + ((lane_idx - 1) * config.SEPARATION_LEDS)
-        
-        # Light up separator LEDs
-        for i in range(config.SEPARATION_LEDS):
-            pixels_set(separator_start + i, config.WHITE)
-        
-    pixels_show()
-    time.sleep_ms(500)
+    # If using separation LEDs, flash them to highlight lane divisions
+    if config.SEPARATION_LEDS > 0:
+        for lane_idx in range(1, config.NUM_LANES):
+            # Calculate separator start position (end of one lane to start of next)
+            separator_start = (lane_idx * config.LEDS_PER_LANE) + ((lane_idx - 1) * config.SEPARATION_LEDS)
+            
+            # Light up separator LEDs
+            for i in range(config.SEPARATION_LEDS):
+                pixels_set(separator_start + i, config.WHITE)
+            
+        pixels_show()
+        time.sleep_ms(500)
     
     # Flash all lanes 3 times in their respective colors
     for _ in range(3):
@@ -48,7 +56,8 @@ def display_startup_sequence():
         # Turn on all lane LEDs with their respective colors
         for lane_idx in range(1, config.NUM_LANES + 1):
             if lane_idx in config.LED_MAPPING:
-                start_led = config.LED_MAPPING[lane_idx]["amber1"]
+                # Start from prestage LED instead of amber1
+                start_led = config.LED_MAPPING[lane_idx]["prestage"]
                 lane_color = lane_colors[(lane_idx - 1) % len(lane_colors)]
                 
                 for i in range(config.LEDS_PER_LANE):
@@ -63,7 +72,7 @@ def display_startup_sequence():
     # For each lane
     for lane_idx in range(1, config.NUM_LANES + 1):
         if lane_idx in config.LED_MAPPING:
-            # Get this lane's LEDs
+            # Get this lane's LEDs - include all lights
             lane_leds = [config.LED_MAPPING[lane_idx][light] for light in ["prestage", "stage", "amber1", "amber2", "amber3", "green", "red"] if light in config.LED_MAPPING[lane_idx]]
             
             # Clear this lane
@@ -86,32 +95,37 @@ def display_startup_sequence():
                 pixels_show()
                 time.sleep_ms(50)
     
-     # Include the staging lights in the sequence
-    lights = ["prestage", "stage", "amber1", "amber2", "amber3", "green", "red"]
+    # Light sequence for all lanes simultaneously
+    # Define the light sequence for a drag race
+    light_sequence = ["prestage", "stage", "amber1", "amber2", "amber3", "green", "red"]
     
-    # Test each light in sequence for both lanes
-    for lane_id in [1, 2]:
-        print(f"Testing lights for Lane {lane_id}")
-        for light in lights:
-            # Skip if light is not in mapping
-            if light not in config.LED_MAPPING[lane_id]:
-                continue
-                
-            # Turn on the light
-            led_idx = config.LED_MAPPING[lane_id][light]
-            pixels_set(led_idx, config.TREE_COLORS[light])
-            pixels_show()
-            time.sleep_ms(300)
-            
-            # Turn off the light
-            pixels_set(led_idx, config.BLACK)
-            pixels_show()
-            time.sleep_ms(100)
+    # Turn off all LEDs
+    pixels_fill(config.BLACK)
+    pixels_show()
+    time.sleep_ms(500)
+    
+    print("Testing race light sequence on all lanes simultaneously")
+    # For each step in the light sequence
+    for light in light_sequence:
+        # Turn on this light for all lanes at once
+        for lane_id in range(1, config.NUM_LANES + 1):
+            if light in config.LED_MAPPING[lane_id]:
+                led_idx = config.LED_MAPPING[lane_id][light]
+                pixels_set(led_idx, config.TREE_COLORS[light])
+        
+        # Show all lanes with this light on
+        pixels_show()
+        time.sleep_ms(300)
+        
+        # Turn off all LEDs before the next light
+        pixels_fill(config.BLACK)
+        pixels_show()
+        time.sleep_ms(100)
     
     # Return to all off
     pixels_fill(config.BLACK)
     pixels_show()
-
+    
 def win_animation(lane_id):
     """Display a winning animation for the specified lane"""
     # Find the LEDs for this lane
