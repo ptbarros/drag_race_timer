@@ -83,8 +83,8 @@ LEDS_PER_LANE = 7          # Number of LEDs per lane (amber1, amber2, amber3, gr
 SEPARATION_LEDS = 0        # Number of LEDs to use as separation between lanes
 
 # Total number of LEDs needed with separation
-NUM_LEDS = (LEDS_PER_LANE * NUM_LANES) + (SEPARATION_LEDS * (NUM_LANES - 1))
-
+# NUM_LEDS = (LEDS_PER_LANE * NUM_LANES) + (SEPARATION_LEDS * (NUM_LANES - 1))
+NUM_LEDS = 43
 # Define colors (in GRB order for WS2812B) - GRB, not RGB!
 YELLOW = 0xFFFF00          # Yellow (GRB: G=FF, R=FF, B=00)
 GREEN = 0xFF0000           # Green (GRB: G=FF, R=00, B=00)
@@ -144,17 +144,51 @@ LED_MAPPING = {
         "green": 26,
         "red": 27
     },
-    5: {  # Lane 5
-        "prestage": 28,
-        "stage": 29,
-        "amber1": 30,
-        "amber2": 31,
-        "amber3": 32,
-        "green": 33,
-        "red": 34
-    }
+#     5: {  # Lane 5
+#         "prestage": 28,
+#         "stage": 29,
+#         "amber1": 30,
+#         "amber2": 31,
+#         "amber3": 32,
+#         "green": 33,
+#         "red": 34
+#    }
 }
 
+# Auxiliary lighting mapping
+AUX_LED_MAPPING = {
+    # LEDs above displays
+    "lane1_display": 39,
+    
+    # LEDs for lane winners/state indicators (3 per lane)
+    "lane1_indicator1": 40,
+    "lane1_indicator2": 41,
+    "lane1_indicator3": 42,
+    
+    "lane2_display": 35,
+    "lane2_indicator1": 36,
+    "lane2_indicator2": 37,
+    "lane2_indicator3": 38,
+    
+    "lane3_display": 31,
+    "lane3_indicator1": 32,
+    "lane3_indicator2": 33,
+    "lane3_indicator3": 34,
+    
+    "lane4_indicator1": 28,
+    "lane4_indicator2": 29,
+    "lane4_indicator3": 30,
+    
+    # Sensor illumination
+    "start_sensor1": 45,
+    "start_sensor2": 46,
+    "finish_sensor1": 47,
+    "finish_sensor2": 48,
+    # Add more as needed...
+}
+
+# Make sure your NUM_LEDS value is set high enough to include all these LEDs
+# NUM_LEDS = 60  # Adjust as needed
 
 # ------------------
 # Pin Assignments

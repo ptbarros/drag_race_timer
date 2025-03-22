@@ -187,9 +187,6 @@ class RaceManager:
         for lane in self.lanes:
             for light in lane.tree_state:
                 lane.tree_state[light] = 0
-                
-            # This function needs to be updated in race_manager.py
-# You don't need to replace the entire file, just update this method
 
     def check_player_buttons(self):
         """Check all player buttons for state changes"""
@@ -242,56 +239,6 @@ class RaceManager:
         
         # Process any queued button events
         self.process_button_events()    
-
-#     def check_player_buttons(self):
-#         """Check all player buttons for state changes"""
-#         for i, lane in enumerate(self.lanes):
-#             current_state = lane.player_btn.value()
-#             
-#             # Button just pressed (transition from 1 to 0)
-#             if current_state == 0 and self.player_btn_states[i] == 1:
-#                 if not self.race_started and config.STAGING_LIGHTS_ENABLED:
-#                     # If race hasn't started, activate staging lights
-#                     if not lane.prestaged:
-#                         lane.prestaged = True
-#                         lane.set_light("prestage", 1)
-#                         print(f"Lane {lane.lane_id}: Pre-staged")
-#                         
-#                     # After pre-staged, move to staged
-#                     elif not lane.staged:
-#                         lane.staged = True
-#                         lane.set_light("stage", 1)
-#                         print(f"Lane {lane.lane_id}: Staged")
-#                         
-#                         # Check if all lanes are staged
-#                         self.check_all_staged()
-#                 
-#                 # If race has started and tree sequence is complete, fire servo (push-to-start mode)
-#                 elif self.race_started and self.tree_sequence_complete and not config.RELEASE_TO_START_MODE:
-#                     self.button_events.append(('player', i))
-#                     print(f"Lane {lane.lane_id}: Player button press detected and queued")
-#                     
-#             # Button just released (transition from 0 to 1)
-#             elif current_state == 1 and self.player_btn_states[i] == 0:
-#                 # In release-to-start mode, fire servo on button release
-#                 if self.race_started and self.tree_sequence_complete and config.RELEASE_TO_START_MODE:
-#                     self.button_events.append(('player', i))
-#                     print(f"Lane {lane.lane_id}: Player button release detected and queued")
-#                     
-#                 # If button released before race starts, turn off staging lights
-#                 elif not self.race_started:
-#                     if lane.staged or lane.prestaged:
-#                         print(f"Lane {lane.lane_id}: Staging cancelled")
-#                         lane.staged = False
-#                         lane.prestaged = False
-#                         lane.set_light("stage", 0)
-#                         lane.set_light("prestage", 0)
-#             
-#             # Update last known state
-#             self.player_btn_states[i] = current_state
-#         
-#         # Process any queued button events
-#         self.process_button_events()
     
     def check_all_staged(self):
         """Check if all lanes are staged and start sequence timer if needed"""
@@ -396,10 +343,19 @@ class RaceManager:
             # Check finish line sensors
             self.check_finish_line_sensors()
             
+            # Check if auxiliary LED functions are available
+            has_aux_leds = hasattr(config, 'AUX_LED_MAPPING')
+            
             # Update reaction time displays for lanes that have broken the start beam
             for lane in self.lanes:
                 if lane.reaction_time is not None and self.display_controller:
                     self.display_controller.show_reaction_time(lane.lane_id - 1, lane.reaction_time)
+                
+                # Update false start indicators using auxiliary LEDs
+                if has_aux_leds and lane.false_start:
+                    # Import only if we need it (to avoid circular imports)
+                    from led.aux_lighting import set_false_start_indicator
+                    set_false_start_indicator(lane.lane_id, True)
             
             # Check if race is complete
             if self.is_race_complete():
@@ -418,6 +374,12 @@ class RaceManager:
                 for lane in self.lanes:
                     position_text = self.get_position_text(lane)
                     print(f"Lane {lane.lane_id}: {position_text}")
+                    
+                    # Set winner indicator using auxiliary LEDs
+                    if has_aux_leds and lane.place == 1:
+                        # Import only if we need it (to avoid circular imports)
+                        from led.aux_lighting import set_lane_winner
+                        set_lane_winner(lane.lane_id, True)
                     
                     # Display race time (if available)
                     if lane.finish_time is not None:

@@ -8,6 +8,7 @@ from lane import Lane
 from race_manager import RaceManager
 from led.ws2812b import init as init_leds
 from led.animations import display_startup_sequence, win_animation, false_start_animation
+from led.aux_lighting import illuminate_sensors, clear_all_aux_leds
 
 # Initialize the LED strip
 init_leds()
@@ -80,6 +81,12 @@ def main():
     # Display startup sequence
     display_startup_sequence()
     
+    # Initialize auxiliary lighting
+    if hasattr(config, 'AUX_LED_MAPPING'):
+        print("Initializing auxiliary lighting...")
+        # Turn on sensor illumination
+        illuminate_sensors(True)
+    
     # Initial reset to ensure clean state
     race_manager.reset_race()
     
@@ -100,6 +107,11 @@ def main():
         reset_button_state = race_manager.reset_btn.value()
         if reset_button_state == 0 and race_manager.last_reset_btn_state == 1:  # Button press detected
             race_manager.reset_race()
+            # Also clear any auxiliary LEDs
+            if hasattr(config, 'AUX_LED_MAPPING'):
+                clear_all_aux_leds()
+                # Re-enable sensor illumination
+                illuminate_sensors(True)
             time.sleep_ms(config.BUTTON_DEBOUNCE)  # Debounce
         race_manager.last_reset_btn_state = reset_button_state
         
