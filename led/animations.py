@@ -64,7 +64,7 @@ def display_startup_sequence():
     for lane_idx in range(1, config.NUM_LANES + 1):
         if lane_idx in config.LED_MAPPING:
             # Get this lane's LEDs
-            lane_leds = [config.LED_MAPPING[lane_idx][light] for light in ["amber1", "amber2", "amber3", "green", "red"]]
+            lane_leds = [config.LED_MAPPING[lane_idx][light] for light in ["prestage", "stage", "amber1", "amber2", "amber3", "green", "red"] if light in config.LED_MAPPING[lane_idx]]
             
             # Clear this lane
             for led in lane_leds:

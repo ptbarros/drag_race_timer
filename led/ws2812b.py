@@ -53,12 +53,24 @@ def pixels_fill(color):
     for i in range(len(led_array)):
         led_array[i] = color
         
+# def set_lane_light(lane_id, light_name, state):
+#     """Set a light in a specific lane to on/off state"""
+#     if lane_id in config.LED_MAPPING and light_name in config.LED_MAPPING[lane_id]:
+#         led_index = config.LED_MAPPING[lane_id][light_name]
+#         if state:
+#             pixels_set(led_index, config.TREE_COLORS[light_name])
+#         else:
+#             pixels_set(led_index, config.TREE_COLORS["off"])
+#         pixels_show()
 def set_lane_light(lane_id, light_name, state):
     """Set a light in a specific lane to on/off state"""
     if lane_id in config.LED_MAPPING and light_name in config.LED_MAPPING[lane_id]:
         led_index = config.LED_MAPPING[lane_id][light_name]
+        print(f"Setting LED {led_index} for Lane {lane_id} {light_name} to {'ON' if state else 'OFF'}")
         if state:
             pixels_set(led_index, config.TREE_COLORS[light_name])
         else:
             pixels_set(led_index, config.TREE_COLORS["off"])
         pixels_show()
+    else:
+        print(f"Warning: LED not found for Lane {lane_id} {light_name}")
