@@ -3,12 +3,33 @@ import time
 from machine import Pin
 import config
 
+# Safety flag - set to True to prevent web server from starting automatically
+# Helps avoid getting locked out when developing
+SAFE_MODE = False
+
+print("Initializing Drag Race Controller...")
+print("Press CTRL+C within 10 seconds to interrupt startup")
+
+# Give 10 seconds to interrupt with CTRL+C before proceeding
+for i in range(10, 0, -1):
+    print(f"Starting in {i} seconds... (Press CTRL+C to enter safe mode)")
+    time.sleep(1)
+
 # Import components
 from lane import Lane
 from race_manager import RaceManager
 from led.ws2812b import init as init_leds
 from led.animations import display_startup_sequence, win_animation, false_start_animation
 from led.aux_lighting import illuminate_sensors, clear_all_aux_leds
+
+# Import web server (if available)
+web_server_available = False
+try:
+    from web.server import start_server, stop_server
+    web_server_available = True
+    print("Web server module available")
+except ImportError:
+    print("Web server module not available")
 
 # Initialize the LED strip
 init_leds()
@@ -90,6 +111,39 @@ def main():
     # Initial reset to ensure clean state
     race_manager.reset_race()
     
+    # Start web server if available and wireless is enabled and not in safe mode
+    wireless_enabled = True  # Default to enabled
+    if hasattr(config, 'WIRELESS_ENABLED'):
+        wireless_enabled = config.WIRELESS_ENABLED
+        
+    if web_server_available and wireless_enabled and not SAFE_MODE:
+        print("\nWill start web server in 10 seconds...")
+        print("Hold the START RACE button to SKIP web server startup")
+        
+        # Check if start button is pressed during countdown
+        skip_server = False
+        for i in range(10, 0, -1):
+            print(f"{i}...")
+            # Check if start button is pressed
+            if race_manager.start_btn.value() == 0:  # Button is pressed (active low)
+                skip_server = True
+                print("Web server startup canceled by user")
+                break
+            time.sleep(1)
+            
+        if not skip_server:
+            print("Starting web server...")
+            web_server_success = start_server(race_manager)
+            if web_server_success:
+                print("Web server started successfully!")
+                print(f"Connect to WiFi network: {config.WIFI_SSID}")
+                print(f"Password: {config.WIFI_PASSWORD}")
+                print(f"Then visit: http://{config.WIFI_IP}")
+            else:
+                print("Failed to start web server.")
+    elif SAFE_MODE:
+        print("Running in SAFE MODE - web server disabled")
+    
     print("System ready. Press start or reset buttons to begin.")
     
     # Print simulation status
@@ -157,4 +211,12 @@ def main():
         time.sleep_ms(config.LOOP_DELAY)  # Small delay for responsive timing
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nProgram interrupted by user")
+        print("Entering safe mode - web server will not start")
+        # If we reach here, the user pressed CTRL+C during startup
+        # Continue with the rest of the program but don't start web server
+        SAFE_MODE = True
+        main()

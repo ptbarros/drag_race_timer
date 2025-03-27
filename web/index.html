@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag Race Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .button {
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .button-start {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .button-start:hover {
+            background-color: #2ecc71;
+        }
+        
+        .button-reset {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .button-reset:hover {
+            background-color: #f44336;
+        }
+        
+        .race-status {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #95a5a6;
+        }
+        
+        .status-active {
+            background-color: #2ecc71;
+        }
+        
+        .lanes-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .lane {
+            flex-basis: 48%;
+            background-color: #ecf0f1;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        
+        .lane h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        
+        .lane-status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .indicators {
+            display: flex;
+            margin-top: 10px;
+        }
+        
+        .indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 1px solid #bdc3c7;
+        }
+        
+        .indicator-on {
+            background-color: #f39c12;
+        }
+        
+        .indicator-red {
+            background-color: #e74c3c;
+        }
+        
+        .indicator-green {
+            background-color: #2ecc71;
+        }
+        
+        .lane-winner {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        .false-start {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        @media (max-width: 600px) {
+            .lane {
+                flex-basis: 100%;
+            }
+            
+            .button {
+                display: block;
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Drag Race Timer</h1>
+        
+        <div class="button-container">
+            <button id="startButton" class="button button-start">Start Race</button>
+            <button id="resetButton" class="button button-reset">Reset Race</button>
+        </div>
+        
+        <div class="race-status">
+            <div class="status-header">
+                <h2>Race Status</h2>
+                <span>
+                    Status: <span id="raceStatusText">Ready</span>
+                    <span id="statusIndicator" class="status-indicator"></span>
+                </span>
+            </div>
+            <div id="lightSequence">Waiting to start</div>
+        </div>
+        
+        <div class="lanes-container" id="lanesContainer">
+            <!-- Lanes will be generated dynamically -->
+        </div>
+    </div>
+    
+    <script>
+        // DOM Elements
+        const startButton = document.getElementById('startButton');
+        const resetButton = document.getElementById('resetButton');
+        const raceStatusText = document.getElementById('raceStatusText');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const lightSequence = document.getElementById('lightSequence');
+        const lanesContainer = document.getElementById('lanesContainer');
+        
+        // Lane data
+        let laneData = [];
+        
+        // Initialize
+        function init() {
+            // Add event listeners
+            startButton.addEventListener('click', startRace);
+            resetButton.addEventListener('click', resetRace);
+            
+            // Load initial status
+            fetchStatus();
+            
+            // Start polling
+            setInterval(fetchStatus, 500);
+        }
+        
+        // API Functions
+        function startRace() {
+            fetch('/api/start')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        console.log('Race started');
+                        startButton.disabled = true;
+                    } else {
+                        console.error('Error starting race:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        function resetRace() {
+            fetch('/api/reset')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        console.log('Race reset');
+                        startButton.disabled = false;
+                    } else {
+                        console.error('Error resetting race:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        function fetchStatus() {
+            fetch('/api/status')
+                .then(response => response.json())
+                .then(updateUI)
+                .catch(error => console.error('Error:', error));
+        }
+        
+        function updateUI(data) {
+            // Update race status
+            if (data.race_started) {
+                raceStatusText.textContent = 'In Progress';
+                statusIndicator.classList.add('status-active');
+                startButton.disabled = true;
+            } else {
+                raceStatusText.textContent = 'Ready';
+                statusIndicator.classList.remove('status-active');
+                startButton.disabled = false;
+            }
+            
+            // Update light sequence status
+            if (data.tree_running) {
+                lightSequence.textContent = `Light sequence: ${data.light_sequence || 'Running'}`;
+            } else if (data.race_started) {
+                lightSequence.textContent = 'Race in progress';
+            } else {
+                lightSequence.textContent = 'Waiting to start';
+            }
+            
+            // Update lanes
+            updateLanes(data.lanes || []);
+        }
+        
+        function updateLanes(lanes) {
+            // Compare new lane data with current data
+            const dataChanged = JSON.stringify(lanes) !== JSON.stringify(laneData);
+            
+            // Only update DOM if data has changed
+            if (dataChanged) {
+                laneData = lanes;
+                
+                // Clear existing lanes
+                lanesContainer.innerHTML = '';
+                
+                // Add lanes
+                lanes.forEach(lane => {
+                    const laneElement = document.createElement('div');
+                    laneElement.className = 'lane';
+                    
+                    // Determine lane status
+                    let statusText = 'Ready';
+                    let statusClass = '';
+                    
+                    if (lane.false_start) {
+                        statusText = 'FALSE START';
+                        statusClass = 'false-start';
+                    } else if (lane.place === 1) {
+                        statusText = 'WINNER!';
+                        statusClass = 'lane-winner';
+                    } else if (lane.place) {
+                        statusText = `Place: ${lane.place}`;
+                    } else if (lane.staged && lane.prestaged) {
+                        statusText = 'Staged';
+                    } else if (lane.prestaged) {
+                        statusText = 'Pre-staged';
+                    }
+                    
+                    // Create lane HTML
+                    laneElement.innerHTML = `
+                        <h3>Lane ${lane.lane_id}</h3>
+                        <div class="lane-status">
+                            <span>Status:</span>
+                            <span class="${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="lane-status">
+                            <span>Reaction Time:</span>
+                            <span>${lane.reaction_time !== null ? (lane.reaction_time / 1000).toFixed(3) + 's' : 'N/A'}</span>
+                        </div>
+                        <div class="lane-status">
+                            <span>Finish Time:</span>
+                            <span>${lane.finish_time !== null ? (lane.finish_time / 1000).toFixed(3) + 's' : 'N/A'}</span>
+                        </div>
+                        <div class="indicators">
+                            <div class="indicator ${lane.prestaged ? 'indicator-on' : ''}"></div>
+                            <div class="indicator ${lane.staged ? 'indicator-on' : ''}"></div>
+                            <div class="indicator ${lane.false_start ? 'indicator-red' : ''}"></div>
+                            <div class="indicator ${lane.place === 1 ? 'indicator-green' : ''}"></div>
+                        </div>
+                    `;
+                    
+                    lanesContainer.appendChild(laneElement);
+                });
+            }
+        }
+        
+        // Initialize when the page loads
+        window.addEventListener('load', init);

@@ -187,9 +187,6 @@ AUX_LED_MAPPING = {
     # Add more as needed...
 }
 
-# Make sure your NUM_LEDS value is set high enough to include all these LEDs
-# NUM_LEDS = 60  # Adjust as needed
-
 # ------------------
 # Pin Assignments
 # ------------------
@@ -231,3 +228,11 @@ RESET_BUTTON_PIN = 7
 # Debug settings
 # ------------------
 SENSOR_DEBUG_MODE = False   # Enable/disable debugging output for sensors
+
+# ------------------
+# Wireless settings
+# ------------------
+WIRELESS_ENABLED = True           # Enable/disable wireless functionality
+WIFI_SSID = 'DragRaceTimer'       # Access point name
+WIFI_PASSWORD = 'race123456'      # Access point password (must be at least 8 characters)
+WIFI_IP = '192.168.4.1'           # IP address for the access point
