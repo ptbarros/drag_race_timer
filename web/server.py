@@ -1,4 +1,4 @@
-# Web server module for Raspberry Pi Pico W Drag Race Controller
+# web/server.py - With enhanced diagnostics for troubleshooting API issues
 import network
 import socket
 import time
@@ -8,10 +8,12 @@ import _thread
 from machine import Pin
 import os
 
-# Network configuration - you can override these in config.py
-SSID = 'DragRaceTimer'  # Access point name
-PASSWORD = 'racetime123'    # Access point password (must be at least 8 characters)
-IP = '192.168.4.1'       # IP address for the access point
+# Network configuration - configurable in config.py
+HOME_SSID = None
+HOME_PASSWORD = None
+AP_SSID = 'DragRaceTimer'
+AP_PASSWORD = 'race123456'
+AP_IP = '192.168.4.1'
 
 # LED to indicate WiFi status
 led = Pin("LED", Pin.OUT)
@@ -25,21 +27,49 @@ html_files = {}
 # Server state
 server_running = False
 server_thread = None
+current_ip = None  # Will store the active IP address
 
 def load_configuration():
     """Load web server configuration from config.py if available"""
-    global SSID, PASSWORD, IP
+    global HOME_SSID, HOME_PASSWORD, AP_SSID, AP_PASSWORD, AP_IP
     
     try:
         import config
-        if hasattr(config, 'WIFI_SSID'):
-            SSID = config.WIFI_SSID
-        if hasattr(config, 'WIFI_PASSWORD'):
-            PASSWORD = config.WIFI_PASSWORD
+        
+        # Try to get home network settings
+        if hasattr(config, 'HOME_WIFI_SSID'):
+            HOME_SSID = config.HOME_WIFI_SSID
+        elif hasattr(config, 'WIFI_SSID') and not hasattr(config, 'AP_WIFI_SSID'):
+            HOME_SSID = config.WIFI_SSID
+            
+        if hasattr(config, 'HOME_WIFI_PASSWORD'):
+            HOME_PASSWORD = config.HOME_WIFI_PASSWORD
+        elif hasattr(config, 'WIFI_PASSWORD') and not hasattr(config, 'AP_WIFI_PASSWORD'):
+            HOME_PASSWORD = config.WIFI_PASSWORD
+            
+        # Get fallback AP settings
+        if hasattr(config, 'AP_WIFI_SSID'):
+            AP_SSID = config.AP_WIFI_SSID
+        elif hasattr(config, 'WIFI_SSID') and hasattr(config, 'AP_WIFI_SSID'):
+            AP_SSID = config.WIFI_SSID
+            
+        if hasattr(config, 'AP_WIFI_PASSWORD'):
+            AP_PASSWORD = config.AP_WIFI_PASSWORD
+        elif hasattr(config, 'WIFI_PASSWORD') and hasattr(config, 'AP_WIFI_SSID'):
+            AP_PASSWORD = config.WIFI_PASSWORD
+            
         if hasattr(config, 'WIFI_IP'):
-            IP = config.WIFI_IP
+            AP_IP = config.WIFI_IP
+            
         print(f"Loaded network configuration from config.py")
-    except:
+        
+        # Print what we're using
+        if HOME_SSID:
+            print(f"Will try to connect to home network: {HOME_SSID}")
+        print(f"Fallback AP: {AP_SSID}")
+        
+    except Exception as e:
+        print(f"Error loading configuration: {e}")
         print("Using default network configuration")
 
 def load_html_files():
@@ -48,11 +78,20 @@ def load_html_files():
         print("Current directory:", os.getcwd())
         print("Files in web directory:", os.listdir('web'))
         
-        # Use relative path with explicit opening method
+        # Load main HTML files 
         with open('./web/index.html', 'r') as file:
             content = file.read()
             html_files['index'] = content
             print(f"Loaded index.html, size: {len(content)} bytes")
+        
+        # Try to load test.html if it exists
+        try:
+            with open('./web/test.html', 'r') as file:
+                content = file.read()
+                html_files['test'] = content
+                print(f"Loaded test.html, size: {len(content)} bytes")
+        except:
+            print("test.html not found, it will be generated dynamically")
             
         # Use same file for race.html for now
         html_files['race'] = html_files['index']
@@ -187,24 +226,85 @@ def load_html_files():
         """
         html_files['race'] = html_files['index']  # Use same basic template for now
 
+def connect_to_home_network():
+    """Try to connect to home WiFi network"""
+    global current_ip
+    
+    # Check if we have home network credentials
+    if not HOME_SSID:
+        print("No home network SSID configured, skipping home network connection")
+        return False
+    
+    print(f"\nAttempting to connect to home network: {HOME_SSID}")
+    
+    # Initialize station interface
+    sta_if = network.WLAN(network.STA_IF)
+    
+    # Activate station interface
+    sta_if.active(True)
+    time.sleep(1)
+    
+    # Try to connect to the home network
+    try:
+        print(f"Connecting to {HOME_SSID}...")
+        sta_if.connect(HOME_SSID, HOME_PASSWORD)
+        
+        # Wait for connection with timeout
+        max_wait = 10  # 10 seconds timeout - shorter to avoid waiting too long
+        while max_wait > 0:
+            if sta_if.isconnected():
+                break
+            max_wait -= 1
+            print("Waiting for WiFi connection...")
+            
+            # Blink LED to show connection attempt
+            led.toggle()
+            time.sleep(1)
+        
+        # Check if connected
+        if sta_if.isconnected():
+            current_ip = sta_if.ifconfig()[0]
+            print(f"Connected to {HOME_SSID}!")
+            print(f"IP address: {current_ip}")
+            
+            # Turn LED on solid to indicate connected
+            led.on()
+            return True
+        else:
+            print(f"Failed to connect to {HOME_SSID}")
+            sta_if.active(False)  # Turn off station interface
+            time.sleep(1)
+            return False
+            
+    except Exception as e:
+        print(f"Error connecting to home network: {e}")
+        try:
+            sta_if.active(False)  # Turn off station interface
+        except:
+            pass
+        time.sleep(1)
+        return False
+
 def setup_access_point():
-    """Set up WiFi access point with improved stability"""
+    """Set up WiFi access point with proven reliable approach"""
+    global current_ip
+    
     # Initialize the WLAN interface in access point mode
     wlan = network.WLAN(network.AP_IF)
     
     # Disable it first for a clean start
+    print("Deactivating any existing AP...")
     wlan.active(False)
     time.sleep(1)
     
-    # Configure the access point
-    print(f"Configuring access point: SSID={SSID}, password={PASSWORD}")
-    wlan.config(essid=SSID, password=PASSWORD, security=network.AUTH_WPA_WPA2_PSK)
-    
-    # Set a static IP address
-    wlan.ifconfig((IP, '255.255.255.0', IP, '8.8.8.8'))
+    # Configure the access point - simple reliable configuration
+    print(f"Configuring access point: SSID={AP_SSID}, password={AP_PASSWORD}")
+    wlan.config(ssid=AP_SSID, password=AP_PASSWORD)
     
     # Activate the interface
+    print("Activating access point...")
     wlan.active(True)
+    time.sleep(2)  # Allow time for activation
     
     # Wait for it to become active
     max_wait = 10
@@ -216,43 +316,100 @@ def setup_access_point():
         time.sleep(1)
     
     if wlan.active():
-        print(f'Access Point active: {SSID}')
+        print(f'Access Point active: {AP_SSID}')
+        current_ip = AP_IP
         
-        # Get and print the configuration details
-        config_details = wlan.ifconfig()
-        print(f'IP address: {config_details[0]}')
-        print(f'Subnet mask: {config_details[1]}')
-        print(f'Gateway: {config_details[2]}')
-        print(f'DNS: {config_details[3]}')
-        
+        print(f'IP address: {current_ip}')
         return True
     else:
         print('Failed to establish access point')
         return False
 
 def handle_request(client_socket):
-    """Handle incoming HTTP requests"""
+    """Handle incoming HTTP requests with enhanced debugging"""
     try:
-        # Set a timeout for the client socket
-        client_socket.settimeout(3.0)
-        
         # Get request data
-        request = client_socket.recv(1024).decode('utf-8')
-        if not request:
-            return
+        try:
+            request_data = client_socket.recv(1024)
+            if not request_data:
+                return
             
-        request_line = request.split('\n')[0]
-        method, path = request_line.split(' ')[:2]
+            # Decode the request with enhanced error handling
+            try:
+                request = request_data.decode('utf-8')
+            except UnicodeError:
+                print("Warning: Could not decode request as UTF-8. Using ISO-8859-1")
+                request = request_data.decode('iso-8859-1')
+                
+        except Exception as e:
+            print(f"Error receiving request: {e}")
+            return
         
-        print(f"Request: {method} {path}")
+        # Parse the request line
+        try:
+            request_lines = request.split('\n')
+            if not request_lines:
+                print("Empty request received")
+                return
+                
+            request_line = request_lines[0]
+            parts = request_line.split(' ')
+            
+            if len(parts) < 2:
+                print(f"Invalid request line: {request_line}")
+                return
+                
+            method, path = parts[0], parts[1]
+            print(f"Request: {method} {path}")
+            
+            # Print headers for debugging (first 5 lines)
+            print("Headers:")
+            for i, line in enumerate(request_lines[1:6]):
+                if line.strip():
+                    print(f"  {line.strip()}")
+            
+        except Exception as e:
+            print(f"Error parsing request: {e}")
+            # Try to extract path directly
+            if '/' in request:
+                path = request[request.index('/'):request.index(' HTTP/') if ' HTTP/' in request else -1]
+                method = "GET"  # Assume GET
+                print(f"Recovered path: {path}")
+            else:
+                send_response(client_socket, 400, 'text/plain', 'Bad Request')
+                return
         
         # API endpoints
         if path.startswith('/api/'):
+            print(f"API request: {path}")
             handle_api_request(client_socket, method, path)
             return
+        
+        # Serve test page
+        elif path == '/test' or path == '/test.html':
+            if 'test' in html_files:
+                send_response(client_socket, 200, 'text/html', html_files['test'])
+            else:
+                # Generate simple test page
+                test_page = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>API Test</title>
+                </head>
+                <body>
+                    <h1>API Test Page</h1>
+                    <p>Click the links to test API:</p>
+                    <a href="/api/start">Start Race</a><br>
+                    <a href="/api/reset">Reset Race</a><br>
+                    <a href="/api/status">Get Status</a>
+                </body>
+                </html>
+                """
+                send_response(client_socket, 200, 'text/html', test_page)
             
         # Serve static files
-        if path == '/' or path == '/index.html':
+        elif path == '/' or path == '/index.html':
             send_response(client_socket, 200, 'text/html', html_files['index'])
         elif path == '/race.html':
             send_response(client_socket, 200, 'text/html', html_files['race'])
@@ -273,57 +430,102 @@ def handle_request(client_socket):
             pass
 
 def handle_api_request(client_socket, method, path):
-    """Handle API requests"""
+    """Handle API requests with enhanced debugging"""
+    global race_manager
+    
+    print("\n==== API REQUEST RECEIVED ====")
+    print(f"Method: {method}")
+    print(f"Path: {path}")
+    
     # Extract API endpoint
-    api_path = path.split('/api/')[1]
+    try:
+        api_path = path.split('/api/')[1]
+        
+        # Strip any query params
+        if '?' in api_path:
+            api_path = api_path.split('?')[0]
+            
+        print(f"API endpoint: {api_path}")
+    except:
+        print("Could not parse API path")
+        api_path = ""
     
     # Create JSON response
     response = {'status': 'error', 'message': 'Unknown command'}
     
     if api_path.startswith('start'):
-        # Start race (non-blocking)
-        if race_manager and not race_manager.race_started:
-            race_manager.start_race()
-            response = {'status': 'success', 'message': 'Race started'}
+        print("START RACE requested")
+        
+        # Check race manager status
+        if race_manager is None:
+            print("ERROR: race_manager is None")
+            response = {'status': 'error', 'message': 'Race manager not available'}
+        elif race_manager.race_started:
+            print("ERROR: Race already in progress")
+            response = {'status': 'error', 'message': 'Race already in progress'}
         else:
-            response = {'status': 'error', 'message': 'Race already in progress or race manager not available'}
+            print("Calling race_manager.start_race()")
+            try:
+                race_manager.start_race()
+                print("race_manager.start_race() completed successfully")
+                response = {'status': 'success', 'message': 'Race started'}
+            except Exception as e:
+                print(f"ERROR in race_manager.start_race(): {e}")
+                response = {'status': 'error', 'message': f'Error starting race: {str(e)}'}
             
     elif api_path.startswith('reset'):
-        # Reset race
-        if race_manager:
-            race_manager.reset_race()
-            response = {'status': 'success', 'message': 'Race reset'}
-        else:
+        print("RESET RACE requested")
+        
+        # Check race manager status
+        if race_manager is None:
+            print("ERROR: race_manager is None")
             response = {'status': 'error', 'message': 'Race manager not available'}
+        else:
+            print("Calling race_manager.reset_race()")
+            try:
+                race_manager.reset_race()
+                print("race_manager.reset_race() completed successfully")
+                response = {'status': 'success', 'message': 'Race reset'}
+            except Exception as e:
+                print(f"ERROR in race_manager.reset_race(): {e}")
+                response = {'status': 'error', 'message': f'Error resetting race: {str(e)}'}
         
     elif api_path.startswith('status'):
-        # Get race status
+        # Get race status (omit detailed debug for this frequent call)
         if race_manager:
-            status = {
-                'race_started': race_manager.race_started,
-                'tree_running': race_manager.tree_running,
-                'light_sequence': race_manager.current_stage,
-                'lanes': []
-            }
-            
-            # Add lane information
-            for i, lane in enumerate(race_manager.lanes):
-                lane_status = {
-                    'lane_id': lane.lane_id,
-                    'finish_time': lane.finish_time,
-                    'reaction_time': lane.reaction_time,
-                    'false_start': lane.false_start,
-                    'place': lane.place,
-                    'staged': lane.staged,
-                    'prestaged': lane.prestaged
+            try:
+                status = {
+                    'race_started': race_manager.race_started,
+                    'tree_running': race_manager.tree_running,
+                    'light_sequence': race_manager.current_stage,
+                    'lanes': []
                 }
-                status['lanes'].append(lane_status)
                 
-            response = status
+                # Add lane information
+                for i, lane in enumerate(race_manager.lanes):
+                    lane_status = {
+                        'lane_id': lane.lane_id,
+                        'finish_time': lane.finish_time,
+                        'reaction_time': lane.reaction_time,
+                        'false_start': lane.false_start,
+                        'place': lane.place,
+                        'staged': lane.staged,
+                        'prestaged': lane.prestaged
+                    }
+                    status['lanes'].append(lane_status)
+                    
+                response = status
+            except Exception as e:
+                print(f"Error generating status: {e}")
+                response = {'status': 'error', 'message': f'Error generating status: {str(e)}'}
         else:
             response = {'status': 'error', 'message': 'Race manager not available'}
     
+    else:
+        print(f"Unknown API endpoint: {api_path}")
+    
     # Send JSON response
+    print(f"Sending response: {response if not api_path.startswith('status') else '(status data)'}")
     send_response(client_socket, 200, 'application/json', json.dumps(response))
 
 def send_response(client_socket, status_code, content_type, content):
@@ -331,24 +533,31 @@ def send_response(client_socket, status_code, content_type, content):
     status_message = {
         200: 'OK',
         404: 'Not Found',
-        500: 'Internal Server Error'
+        500: 'Internal Server Error',
+        400: 'Bad Request'
     }.get(status_code, 'Unknown')
     
     response = f'HTTP/1.1 {status_code} {status_message}\r\n'
     response += f'Content-Type: {content_type}\r\n'
-    response += 'Connection: close\r\n\r\n'
+    response += 'Connection: close\r\n'
+    response += 'Access-Control-Allow-Origin: *\r\n'  # Allow cross-origin requests
+    
+    # Add content length
+    content_bytes = content.encode('utf-8') if isinstance(content, str) else content
+    response += f'Content-Length: {len(content_bytes)}\r\n\r\n'
     
     # Send headers
-    client_socket.send(response.encode('utf-8'))
-    
-    # Send content
-    if isinstance(content, str):
-        client_socket.send(content.encode('utf-8'))
-    else:
-        client_socket.send(content)
+    try:
+        client_socket.send(response.encode('utf-8'))
+        
+        # Send content
+        client_socket.send(content_bytes)
+        
+    except Exception as e:
+        print(f"Error sending response: {e}")
 
 def server_thread_function():
-    """Server thread function"""
+    """Server thread function with enhanced debugging"""
     global server_running
     
     # Create socket
@@ -360,7 +569,7 @@ def server_thread_function():
         server_address = ('0.0.0.0', 80)
         server_socket.bind(server_address)
         server_socket.listen(5)
-        print(f"Server started on http://{IP}:80")
+        print(f"Server started on http://{current_ip}:80")
         
         # Blink LED to indicate server is running
         for _ in range(5):
@@ -374,26 +583,21 @@ def server_thread_function():
         
         # Main server loop
         while server_running:
-            # Collect garbage to free memory
-            gc.collect()
-            
-            # Set a timeout for accept to allow for server stop
-            server_socket.settimeout(0.1)
-            
             try:
-                # Accept client connection
+                # Simple blocking accept - proven to be most reliable
                 client_socket, client_address = server_socket.accept()
-                print(f"Client connected: {client_address}")
+                print(f"\nClient connected: {client_address}")
                 
                 # Handle the request
                 handle_request(client_socket)
                 
-            except OSError as e:
-                # Socket timeout or other socket error - continue
-                pass
+            except Exception as e:
+                print(f"Error in server loop: {e}")
+                time.sleep(0.5)
                 
-            # Small delay
-            time.sleep(0.01)
+            # Collect garbage occasionally
+            if time.time() % 10 < 0.5:  # Every ~10 seconds
+                gc.collect()
             
     except Exception as e:
         print(f"Server error: {e}")
@@ -403,8 +607,8 @@ def server_thread_function():
         led.off()
 
 def start_server(race_mgr=None):
-    """Start the web server in a separate thread"""
-    global race_manager, server_running, server_thread
+    """Start the web server with improved reliability"""
+    global race_manager, server_running, server_thread, current_ip
     
     # Set race manager reference
     race_manager = race_mgr
@@ -415,10 +619,26 @@ def start_server(race_mgr=None):
     # Load HTML files
     load_html_files()
     
-    # Set up access point
-    if not setup_access_point():
-        print("Failed to set up WiFi. Check your network configuration.")
-        return False
+    # Turn on LED to indicate starting
+    led.on()
+    
+    # First try to connect to home network if available
+    home_network_connected = connect_to_home_network()
+    
+    # If not connected to home network, set up access point
+    if not home_network_connected:
+        print("\nFalling back to access point mode...")
+        if not setup_access_point():
+            print("Failed to set up WiFi. Check your network configuration.")
+            led.off()
+            return False
+    
+    # Flash LED to indicate WiFi is ready
+    for _ in range(3):
+        led.on()
+        time.sleep(0.3)
+        led.off()
+        time.sleep(0.3)
     
     # Start server thread
     server_running = True
@@ -429,6 +649,7 @@ def start_server(race_mgr=None):
     except Exception as e:
         print(f"Failed to start server thread: {e}")
         server_running = False
+        led.off()
         return False
 
 def stop_server():
@@ -439,6 +660,7 @@ def stop_server():
         server_running = False
         print("Server stopping...")
         time.sleep(1)  # Give server thread time to stop
+        led.off()
         return True
     else:
         print("Server not running")

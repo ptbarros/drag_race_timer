@@ -232,7 +232,12 @@ SENSOR_DEBUG_MODE = False   # Enable/disable debugging output for sensors
 # ------------------
 # Wireless settings
 # ------------------
-WIRELESS_ENABLED = True           # Enable/disable wireless functionality
-WIFI_SSID = 'DragRaceTimer'       # Access point name
-WIFI_PASSWORD = 'race123456'      # Access point password (must be at least 8 characters)
-WIFI_IP = '192.168.4.1'           # IP address for the access point
+
+# Home network settings (primary connection)
+HOME_WIFI_SSID = 'Milk3yway'      # Your home WiFi name
+HOME_WIFI_PASSWORD = 'sch00lrotc2020' # Your home WiFi password
+
+# Fallback AP settings (if home network connection fails)
+AP_WIFI_SSID = 'DragRaceTimer'          # Name for the fallback AP
+AP_WIFI_PASSWORD = 'race123456'         # Password for the fallback AP
+WIFI_IP = '192.168.4.1'                 # IP address for the fallback AP

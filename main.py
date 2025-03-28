@@ -136,9 +136,7 @@ def main():
             web_server_success = start_server(race_manager)
             if web_server_success:
                 print("Web server started successfully!")
-                print(f"Connect to WiFi network: {config.WIFI_SSID}")
-                print(f"Password: {config.WIFI_PASSWORD}")
-                print(f"Then visit: http://{config.WIFI_IP}")
+                print(f"Connect to the URL displayed above in any browser to control the race")
             else:
                 print("Failed to start web server.")
     elif SAFE_MODE:

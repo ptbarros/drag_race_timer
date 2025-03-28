@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple API Test</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        button { padding: 10px; margin: 5px; }
+        .log { 
+            background-color: #f0f0f0; 
+            padding: 10px; 
+            height: 200px; 
+            overflow: auto;
+            font-family: monospace;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Test Page</h1>
+    
+    <h2>1. Direct Links (no JavaScript)</h2>
+    <p>Click these links to directly call the API:</p>
+    <a href="/api/start" target="_blank">Start Race (Direct Link)</a><br>
+    <a href="/api/reset" target="_blank">Reset Race (Direct Link)</a><br>
+    <a href="/api/status" target="_blank">Get Status (Direct Link)</a>
+    
+    <h2>2. JavaScript Fetch API</h2>
+    <button onclick="testFetch()">Test Fetch API</button>
+    <button onclick="startWithFetch()">Start Race (Fetch)</button>
+    <button onclick="resetWithFetch()">Reset Race (Fetch)</button>
+    
+    <h2>3. XMLHttpRequest (Older Method)</h2>
+    <button onclick="testXHR()">Test XHR</button>
+    <button onclick="startWithXHR()">Start Race (XHR)</button>
+    <button onclick="resetWithXHR()">Reset Race (XHR)</button>
+    
+    <h2>4. Form Method (Fallback)</h2>
+    <form action="/api/start" method="get">
+        <input type="submit" value="Start Race (Form)">
+    </form>
+    <form action="/api/reset" method="get">
+        <input type="submit" value="Reset Race (Form)">
+    </form>
+    
+    <h2>Debug Log</h2>
+    <div class="log" id="log"></div>
+
+    <script>
+        // Log function
+        function log(msg) {
+            const logElem = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logElem.innerHTML += `[${time}] ${msg}<br>`;
+            logElem.scrollTop = logElem.scrollHeight;
+            console.log(`[${time}] ${msg}`);
+        }
+        
+        log("Page loaded");
+        
+        // Test basic Fetch API
+        function testFetch() {
+            log("Testing Fetch API...");
+            fetch('/api/status')
+                .then(response => {
+                    log(`Fetch response status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    log(`Fetch successful! Response: ${JSON.stringify(data).substring(0, 50)}...`);
+                })
+                .catch(error => {
+                    log(`Fetch error: ${error}`);
+                });
+        }
+        
+        // Start race with Fetch API
+        function startWithFetch() {
+            log("Starting race with Fetch...");
+            fetch('/api/start')
+                .then(response => {
+                    log(`Start response status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    log(`Start successful! Response: ${JSON.stringify(data)}`);
+                })
+                .catch(error => {
+                    log(`Start error: ${error}`);
+                });
+        }
+        
+        // Reset race with Fetch API
+        function resetWithFetch() {
+            log("Resetting race with Fetch...");
+            fetch('/api/reset')
+                .then(response => {
+                    log(`Reset response status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    log(`Reset successful! Response: ${JSON.stringify(data)}`);
+                })
+                .catch(error => {
+                    log(`Reset error: ${error}`);
+                });
+        }
+        
+        // Test XMLHttpRequest
+        function testXHR() {
+            log("Testing XMLHttpRequest...");
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/status', true);
+            
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    log(`XHR successful! Response: ${xhr.responseText.substring(0, 50)}...`);
+                } else {
+                    log(`XHR error! Status: ${xhr.status}`);
+                }
+            };
+            
+            xhr.onerror = function() {
+                log("XHR request failed");
+            };
+            
+            xhr.send();
+        }
+        
+        // Start race with XMLHttpRequest
+        function startWithXHR() {
+            log("Starting race with XHR...");
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/start', true);
+            
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    log(`Start XHR successful! Response: ${xhr.responseText}`);
+                } else {
+                    log(`Start XHR error! Status: ${xhr.status}`);
+                }
+            };
+            
+            xhr.onerror = function() {
+                log("Start XHR request failed");
+            };
+            
+            xhr.send();
+        }
+        
+        // Reset race with XMLHttpRequest
+        function resetWithXHR() {
+            log("Resetting race with XHR...");
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/reset', true);
+            
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    log(`Reset XHR successful! Response: ${xhr.responseText}`);
+                } else {
+                    log(`Reset XHR error! Status: ${xhr.status}`);
+                }
+            };
+            
+            xhr.onerror = function() {
+                log("Reset XHR request failed");
+            };
+            
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
