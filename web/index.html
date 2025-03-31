@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drag Race Timer</title>
+    <title>Drag Race Timer (Debug Version)</title>
     <style>
+        /* CSS remains the same as before */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -170,6 +171,17 @@
             opacity: 1;
         }
         
+        #debugLog {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin-top: 20px;
+            font-family: monospace;
+            height: 150px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        
         @media (max-width: 600px) {
             .lane {
                 flex-basis: 100%;
@@ -185,11 +197,19 @@
 </head>
 <body>
     <div class="container">
-        <h1>Drag Race Timer</h1>
+        <h1>Drag Race Timer (Debug)</h1>
         
         <div class="button-container">
-            <button id="startButton" class="button button-start">Start Race</button>
-            <button id="resetButton" class="button button-reset">Reset Race</button>
+            <button id="startButton" class="button button-start" onclick="debugLog('Start button clicked directly via onclick')">Start Race</button>
+            <button id="resetButton" class="button button-reset" onclick="debugLog('Reset button clicked directly via onclick')">Reset Race</button>
+            
+            <!-- Additional test method buttons -->
+            <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
+                <h3>Alternative Methods</h3>
+                <button onclick="startRaceDirectFetch()">Start (Fetch)</button>
+                <button onclick="startRaceXHR()">Start (XHR)</button>
+                <a href="/api/start" target="_blank">Start (Direct Link)</a>
+            </div>
         </div>
         
         <div class="race-status">
@@ -206,6 +226,10 @@
         <div class="lanes-container" id="lanesContainer">
             <!-- Lanes will be generated dynamically -->
         </div>
+        
+        <!-- Debug log area -->
+        <h3>Debug Log</h3>
+        <div id="debugLog"></div>
     </div>
     
     <!-- Notification element -->
@@ -220,12 +244,66 @@
         const lightSequence = document.getElementById('lightSequence');
         const lanesContainer = document.getElementById('lanesContainer');
         const notification = document.getElementById('notification');
+        const debugLogElement = document.getElementById('debugLog');
         
         // Lane data
         let laneData = [];
         
+        // Debugging function
+        function debugLog(message) {
+            console.log(message);
+            const timestamp = new Date().toLocaleTimeString();
+            debugLogElement.innerHTML += `[${timestamp}] ${message}<br>`;
+            debugLogElement.scrollTop = debugLogElement.scrollHeight;
+        }
+        
+        // Alternative start methods for testing
+        function startRaceDirectFetch() {
+            debugLog("Testing start race with Fetch API...");
+            fetch('/api/start')
+                .then(response => {
+                    debugLog(`Fetch response status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    debugLog(`Start response: ${JSON.stringify(data)}`);
+                    showNotification('Race started via Fetch!');
+                })
+                .catch(error => {
+                    debugLog(`Fetch error: ${error}`);
+                    showNotification('Error starting race', false);
+                });
+        }
+        
+        function startRaceXHR() {
+            debugLog("Testing start race with XMLHttpRequest...");
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/start', true);
+            
+            xhr.onload = function() {
+                debugLog(`XHR response status: ${xhr.status}`);
+                if (xhr.status === 200) {
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        debugLog(`Start response: ${JSON.stringify(data)}`);
+                        showNotification('Race started via XHR!');
+                    } catch (e) {
+                        debugLog(`Error parsing XHR response: ${e}`);
+                    }
+                }
+            };
+            
+            xhr.onerror = function() {
+                debugLog("XHR error occurred");
+                showNotification('Error starting race', false);
+            };
+            
+            xhr.send();
+        }
+        
         // Show notification
         function showNotification(message, isSuccess = true) {
+            debugLog(`Notification: ${message} (${isSuccess ? 'success' : 'error'})`);
             notification.textContent = message;
             notification.style.backgroundColor = isSuccess ? '#2ecc71' : '#e74c3c';
             notification.classList.add('show');
@@ -236,42 +314,60 @@
             }, 3000);
         }
         
-        // Make XHR request
+        // Make XHR request with enhanced debugging
         function makeRequest(url, callback) {
+            debugLog(`Making request to: ${url}`);
             const xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
             
             xhr.onload = function() {
+                debugLog(`Response received: status=${xhr.status}`);
                 if (xhr.status === 200) {
                     try {
-                        const data = JSON.parse(xhr.responseText);
+                        const responseText = xhr.responseText;
+                        debugLog(`Raw response: ${responseText.substring(0, 100)}${responseText.length > 100 ? '...' : ''}`);
+                        const data = JSON.parse(responseText);
+                        debugLog(`Parsed response successfully`);
                         if (callback) callback(data);
                     } catch (e) {
-                        console.error('Error parsing response:', e);
+                        debugLog(`Error parsing response: ${e}`);
                         showNotification('Error processing response', false);
                     }
                 } else {
-                    console.error('Request failed:', xhr.status);
+                    debugLog(`Request failed: ${xhr.status}`);
                     showNotification('Request failed', false);
                 }
             };
             
             xhr.onerror = function() {
-                console.error('Network error');
+                debugLog(`Network error for request to ${url}`);
                 showNotification('Network error', false);
             };
             
+            debugLog(`Sending request...`);
             xhr.send();
         }
         
         // Initialize
         function init() {
+            debugLog("Initializing page...");
+            
             // Start button click handler
-            startButton.addEventListener('click', function() {
+            startButton.addEventListener('click', function(event) {
+                debugLog("Start button clicked via event listener");
+                
+                // Prevent default behavior
+                if (event) {
+                    event.preventDefault();
+                    debugLog("Prevented default event behavior");
+                }
+                
                 startButton.disabled = true; // Prevent double-clicks
+                debugLog("Start button disabled to prevent double-clicks");
                 
                 makeRequest('/api/start', function(data) {
-                    if (data.status === 'success') {
+                    debugLog(`Start race response: ${JSON.stringify(data)}`);
+                    if (data.status === 'success' || data.race_started) {
                         showNotification('Race started!');
                         fetchStatus(); // Update status immediately
                     } else {
@@ -279,13 +375,27 @@
                         startButton.disabled = false;
                     }
                 });
+                
+                // Return false to prevent page navigation
+                debugLog("Returning false from start button handler");
+                return false;
             });
             
             // Reset button click handler
-            resetButton.addEventListener('click', function() {
+            resetButton.addEventListener('click', function(event) {
+                debugLog("Reset button clicked via event listener");
+                
+                // Prevent default behavior
+                if (event) {
+                    event.preventDefault();
+                    debugLog("Prevented default event behavior");
+                }
+                
                 resetButton.disabled = true; // Prevent double-clicks
+                debugLog("Reset button disabled to prevent double-clicks");
                 
                 makeRequest('/api/reset', function(data) {
+                    debugLog(`Reset race response: ${JSON.stringify(data)}`);
                     if (data.status === 'success') {
                         showNotification('Race reset!');
                         fetchStatus(); // Update status immediately
@@ -295,13 +405,21 @@
                     }
                     resetButton.disabled = false;
                 });
+                
+                // Return false to prevent page navigation
+                debugLog("Returning false from reset button handler");
+                return false;
             });
             
             // Start polling for status
-            setInterval(fetchStatus, 500);
+            debugLog("Setting up status polling");
+            setInterval(fetchStatus, 1000); // Slightly longer interval for debugging
             
             // Fetch initial status
+            debugLog("Fetching initial status");
             fetchStatus();
+            
+            debugLog("Initialization complete");
         }
         
         // Fetch status
@@ -398,7 +516,17 @@
         }
         
         // Initialize when the page loads
-        window.addEventListener('load', init);
+        debugLog("Page loaded, waiting for DOMContentLoaded event");
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog("DOMContentLoaded event fired");
+            init();
+        });
+        
+        // Backup initialization
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            debugLog(`Document already ${document.readyState}, initializing now`);
+            init();
+        }
     </script>
 </body>
 </html>

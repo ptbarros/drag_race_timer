@@ -362,11 +362,21 @@ def handle_request(client_socket):
             method, path = parts[0], parts[1]
             print(f"Request: {method} {path}")
             
+            # Extract headers into a dictionary
+            headers = {}
+            for line in request_lines[1:]:
+                line = line.strip()
+                if line and ': ' in line:
+                    key, value = line.split(': ', 1)
+                    headers[key] = value
+            
             # Print headers for debugging (first 5 lines)
             print("Headers:")
-            for i, line in enumerate(request_lines[1:6]):
-                if line.strip():
-                    print(f"  {line.strip()}")
+            header_count = 0
+            for key, value in headers.items():
+                if header_count < 5:
+                    print(f"  {key}: {value}")
+                    header_count += 1
             
         except Exception as e:
             print(f"Error parsing request: {e}")
@@ -375,6 +385,7 @@ def handle_request(client_socket):
                 path = request[request.index('/'):request.index(' HTTP/') if ' HTTP/' in request else -1]
                 method = "GET"  # Assume GET
                 print(f"Recovered path: {path}")
+                headers = {}
             else:
                 send_response(client_socket, 400, 'text/plain', 'Bad Request')
                 return
@@ -382,8 +393,220 @@ def handle_request(client_socket):
         # API endpoints
         if path.startswith('/api/'):
             print(f"API request: {path}")
-            handle_api_request(client_socket, method, path)
+            handle_api_request(client_socket, method, path, headers, request)
             return
+        
+        # Serve control page
+        elif path == '/control.html':
+            try:
+                if race_manager:
+                    # Fetch current status
+                    status = {
+                        'race_started': race_manager.race_started,
+                        'tree_running': race_manager.tree_running,
+                        'light_sequence': race_manager.current_stage
+                    }
+                    
+                    # Generate lane HTML
+                    
+                    # Generate lane HTML with a simpler approach
+                    lanes_html = ""
+                    print(f"Processing {len(race_manager.lanes)} lanes for display")
+
+                    # First generate the HTML for each lane separately
+                    lane_htmls = []
+                    for i, lane in enumerate(race_manager.lanes):
+                        lane_id = lane.lane_id
+                        print(f"Generating HTML for Lane {lane_id} (index {i})")
+                        
+                        # Determine lane status
+                        status_text = 'Ready'
+                        status_class = ''
+                        
+                        if lane.false_start:
+                            status_text = 'FALSE START'
+                            status_class = 'false-start'
+                        elif lane.place == 1:
+                            status_text = 'WINNER!'
+                            status_class = 'lane-winner'
+                        elif lane.place:
+                            status_text = f'Place: {lane.place}'
+                        elif lane.staged and lane.prestaged:
+                            status_text = 'Staged'
+                        elif lane.prestaged:
+                            status_text = 'Pre-staged'
+                        
+                        # Format times nicely
+                        reaction_time = f"{(lane.reaction_time / 1000):.3f}s" if lane.reaction_time is not None else "N/A"
+                        finish_time = f"{(lane.finish_time / 1000):.3f}s" if lane.finish_time is not None else "N/A"
+                        
+                        # Use a simple string for each lane
+                        lane_html = f"""<div class="lane">
+                    <h3>Lane {lane_id}</h3>
+                    <div class="lane-status"><span>Status:</span><span class="{status_class}">{status_text}</span></div>
+                    <div class="lane-status"><span>Reaction Time:</span><span>{reaction_time}</span></div>
+                    <div class="lane-status"><span>Finish Time:</span><span>{finish_time}</span></div>
+                    </div>"""
+                        
+                        lane_htmls.append(lane_html)
+                        print(f"Added lane {lane_id} HTML ({len(lane_html)} chars)")
+
+                    # Now combine all lane HTMLs together
+                    lanes_html = "\n".join(lane_htmls)
+                    print(f"Total lanes HTML length: {len(lanes_html)} chars")
+                    
+#                     # Inside the handle_request function, replace the lane HTML generation section:
+# 
+#                     # Generate lane HTML with debugging
+#                     lanes_html = ""
+#                     print(f"Processing {len(race_manager.lanes)} lanes for display")
+#                     for i, lane in enumerate(race_manager.lanes):
+#                         lane_id = lane.lane_id
+#                         print(f"Generating HTML for Lane {lane_id} (index {i})")
+#                         
+#                         # Determine lane status
+#                         status_text = 'Ready'
+#                         status_class = ''
+#                         
+#                         if lane.false_start:
+#                             status_text = 'FALSE START'
+#                             status_class = 'false-start'
+#                         elif lane.place == 1:
+#                             status_text = 'WINNER!'
+#                             status_class = 'lane-winner'
+#                         elif lane.place:
+#                             status_text = f'Place: {lane.place}'
+#                         elif lane.staged and lane.prestaged:
+#                             status_text = 'Staged'
+#                         elif lane.prestaged:
+#                             status_text = 'Pre-staged'
+#                         
+#                         # Format times nicely
+#                         reaction_time = f"{(lane.reaction_time / 1000):.3f}s" if lane.reaction_time is not None else "N/A"
+#                         finish_time = f"{(lane.finish_time / 1000):.3f}s" if lane.finish_time is not None else "N/A"
+#                         
+#                         # Create simplified lane HTML structure
+#                         lane_html = f"""
+#                         <div class="lane">
+#                             <h3>Lane {lane_id}</h3>
+#                             <div class="lane-status">
+#                                 <span>Status:</span>
+#                                 <span class="{status_class}">{status_text}</span>
+#                             </div>
+#                             <div class="lane-status">
+#                                 <span>Reaction Time:</span>
+#                                 <span>{reaction_time}</span>
+#                             </div>
+#                             <div class="lane-status">
+#                                 <span>Finish Time:</span>
+#                                 <span>{finish_time}</span>
+#                             </div>
+#                         </div>
+#                         """
+#                         
+#                         lanes_html += lane_html
+#                         print(f"Added lane {lane_id} HTML ({len(lane_html)} chars)")
+# 
+#                     print(f"Total lanes HTML length: {len(lanes_html)} chars")            
+#             
+# #                     lanes_html = ""
+# #                     print(f"Processing {len(race_manager.lanes)} lanes for display")
+# #                     for lane in race_manager.lanes:
+# #                         lane_id = lane.lane_id
+# #                         print(f"Generating HTML for Lane {lane_id}")
+# #                         
+# #                         # Determine lane status
+# #                         status_text = 'Ready'
+# #                         status_class = ''
+# #                         
+# #                         if lane.false_start:
+# #                             status_text = 'FALSE START'
+# #                             status_class = 'false-start'
+# #                         elif lane.place == 1:
+# #                             status_text = 'WINNER!'
+# #                             status_class = 'lane-winner'
+# #                         elif lane.place:
+# #                             status_text = f'Place: {lane.place}'
+# #                         elif lane.staged and lane.prestaged:
+# #                             status_text = 'Staged'
+# #                         elif lane.prestaged:
+# #                             status_text = 'Pre-staged'
+# #                         
+# #                         # Format times nicely
+# #                         reaction_time = f"{(lane.reaction_time / 1000):.3f}s" if lane.reaction_time is not None else "N/A"
+# #                         finish_time = f"{(lane.finish_time / 1000):.3f}s" if lane.finish_time is not None else "N/A"
+# #                         
+# #                         # Create lane HTML with lane ID class for specific styling if needed
+# #                         lanes_html += f"""
+# #                         <div class="lane lane-{lane_id}">
+# #                             <h3>Lane {lane_id}</h3>
+# #                             <div class="lane-status">
+# #                                 <span>Status:</span>
+# #                                 <span class="{status_class}">{status_text}</span>
+# #                             </div>
+# #                             <div class="lane-status">
+# #                                 <span>Reaction Time:</span>
+# #                                 <span>{reaction_time}</span>
+# #                             </div>
+# #                             <div class="lane-status">
+# #                                 <span>Finish Time:</span>
+# #                                 <span>{finish_time}</span>
+# #                             </div>
+# #                         </div>
+# #                         """
+                    
+                    
+                    # Read the template
+                    with open('./web/control.html', 'r') as file:
+                        html_content = file.read()
+                    
+                    # Update status text
+                    if status['race_started']:
+                        status_text = "In Progress"
+                    else:
+                        status_text = "Ready"
+                        
+                    # Update light sequence
+                    if status['tree_running']:
+                        light_text = f"Light sequence: {status['light_sequence'] or 'Running'}"
+                    elif status['race_started']:
+                        light_text = "Race in progress"
+                    else:
+                        light_text = "Waiting to start"
+                        
+                    # Replace placeholders with actual content
+                    html_content = html_content.replace('<span id="raceStatusText"><!-- Status will be filled by server side--></span>', 
+                                                     f'<span id="raceStatusText">{status_text}</span>')
+                    html_content = html_content.replace('<div id="lightSequence"><!-- Sequence will be filled by server side--></div>', 
+                                                     f'<div id="lightSequence">{light_text}</div>')
+#                     html_content = html_content.replace('<div class="lanes-container" id="lanesContainer">', 
+#                                                      f'<div class="lanes-container" id="lanesContainer">{lanes_html}')
+                    html_content = html_content.replace('<!-- LANE_HTML_PLACEHOLDER -->', lanes_html)                    
+                    # Add a timestamp to the generated page
+                    import time
+                    current_time = time.localtime()
+                    time_string = f"{current_time[3]:02d}:{current_time[4]:02d}:{current_time[5]:02d}"
+                    html_content = html_content.replace('<!-- TIME_STAMP -->', time_string)
+                    
+                    send_response(client_socket, 200, 'text/html', html_content)
+                else:
+                    # Race manager not available
+                    with open('./web/control.html', 'r') as file:
+                        html_content = file.read()
+                        
+                    html_content = html_content.replace('<span id="raceStatusText"><!-- Status will be filled by server side--></span>', 
+                                                     '<span id="raceStatusText">Race manager not available</span>')
+                    
+                    # Add timestamp even when race manager isn't available
+                    import time
+                    current_time = time.localtime()
+                    time_string = f"{current_time[3]:02d}:{current_time[4]:02d}:{current_time[5]:02d}"
+                    html_content = html_content.replace('<!-- TIME_STAMP -->', time_string)
+                    
+                    send_response(client_socket, 200, 'text/html', html_content)
+            except Exception as e:
+                print(f"Error generating control page: {e}")
+                send_response(client_socket, 500, 'text/plain', f"Server error: {str(e)}")
         
         # Serve test page
         elif path == '/test' or path == '/test.html':
@@ -408,14 +631,152 @@ def handle_request(client_socket):
                 """
                 send_response(client_socket, 200, 'text/html', test_page)
             
+        # Serve minimal test page
+        elif path == '/minimal_test.html':
+            try:
+                with open('./web/minimal_test.html', 'r') as file:
+                    minimal_test_content = file.read()
+                send_response(client_socket, 200, 'text/html', minimal_test_content)
+            except:
+                # Fallback minimal test page
+                minimal_test_content = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Minimal Test</title>
+                    <style>
+                        body { font-family: Arial; padding: 20px; }
+                        button { padding: 10px; margin: 5px; }
+                        #log { background: #f0f0f0; padding: 10px; height: 200px; overflow: auto; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Minimal Test Page</h1>
+                    
+                    <div>
+                        <h2>Simple Tests</h2>
+                        <button id="testButton">Test Button (click me first)</button>
+                        <button id="alertButton">Show Alert</button>
+                        <a href="/api/start" id="directLink">Direct Link (this should work)</a>
+                    </div>
+                    
+                    <div>
+                        <h2>Simple API Tests</h2>
+                        <button id="fetchButton">Test Fetch API</button>
+                        <button id="xhrButton">Test XMLHttpRequest</button>
+                    </div>
+                    
+                    <div>
+                        <h2>Debug Log</h2>
+                        <div id="log"></div>
+                    </div>
+                    
+                    <script>
+                        // Try several different ways to write to the log
+                        // Method 1: Basic DOM manipulation
+                        document.getElementById('log').innerHTML += "Page loaded<br>";
+                        
+                        // Method 2: Function for logging
+                        function log(message) {
+                            var logElement = document.getElementById('log');
+                            logElement.innerHTML += message + "<br>";
+                            logElement.scrollTop = logElement.scrollHeight;
+                            console.log(message); // Also log to console
+                        }
+                        
+                        log("Log function defined");
+                        
+                        // Method 3: Direct event handler
+                        document.getElementById('testButton').onclick = function() {
+                            log("Test button clicked via onclick property");
+                        };
+                        
+                        // Method 4: addEventListener
+                        document.getElementById('alertButton').addEventListener('click', function() {
+                            log("Alert button clicked via addEventListener");
+                            alert("This is a test alert");
+                        });
+                        
+                        // Method 5: Direct onclick in HTML
+                        function handleFetch() {
+                            log("Fetch button clicked");
+                            
+                            fetch('/api/status')
+                                .then(function(response) {
+                                    log("Fetch response received: " + response.status);
+                                    return response.json();
+                                })
+                                .then(function(data) {
+                                    log("Data received: " + JSON.stringify(data).slice(0, 50) + "...");
+                                })
+                                .catch(function(error) {
+                                    log("Fetch error: " + error);
+                                });
+                        }
+                        
+                        // Method 6: XMLHttpRequest
+                        function handleXHR() {
+                            log("XHR button clicked");
+                            
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('GET', '/api/status', true);
+                            
+                            xhr.onload = function() {
+                                log("XHR response received: " + xhr.status);
+                                if (xhr.status === 200) {
+                                    log("XHR data: " + xhr.responseText.slice(0, 50) + "...");
+                                }
+                            };
+                            
+                            xhr.onerror = function() {
+                                log("XHR error occurred");
+                            };
+                            
+                            xhr.send();
+                            log("XHR request sent");
+                        }
+                        
+                        // Add event listeners using a different approach
+                        document.getElementById('fetchButton').onclick = handleFetch;
+                        document.getElementById('xhrButton').onclick = handleXHR;
+                        
+                        // Check if the document is loaded
+                        log("Document ready state: " + document.readyState);
+                    </script>
+                </body>
+                </html>
+                """
+                send_response(client_socket, 200, 'text/html', minimal_test_content)
+                
         # Serve static files
         elif path == '/' or path == '/index.html':
             send_response(client_socket, 200, 'text/html', html_files['index'])
         elif path == '/race.html':
             send_response(client_socket, 200, 'text/html', html_files['race'])
         else:
-            # 404 Not Found
-            send_response(client_socket, 404, 'text/plain', 'File not found')
+            # Try to serve the file from the web directory
+            try:
+                file_path = path.lstrip('/')
+                if file_path.startswith('web/'):
+                    file_path = file_path[4:]  # Remove 'web/' prefix
+                
+                full_path = f'./web/{file_path}'
+                with open(full_path, 'r') as file:
+                    content = file.read()
+                
+                # Determine content type based on file extension
+                content_type = 'text/plain'
+                if file_path.endswith('.html'):
+                    content_type = 'text/html'
+                elif file_path.endswith('.css'):
+                    content_type = 'text/css'
+                elif file_path.endswith('.js'):
+                    content_type = 'application/javascript'
+                
+                send_response(client_socket, 200, content_type, content)
+            except:
+                # 404 Not Found
+                send_response(client_socket, 404, 'text/plain', 'File not found')
             
     except Exception as e:
         print(f"Error handling request: {e}")
@@ -429,7 +790,7 @@ def handle_request(client_socket):
         except:
             pass
 
-def handle_api_request(client_socket, method, path):
+def handle_api_request(client_socket, method, path, headers, request):
     """Handle API requests with enhanced debugging"""
     global race_manager
     
@@ -441,7 +802,7 @@ def handle_api_request(client_socket, method, path):
     try:
         api_path = path.split('/api/')[1]
         
-        # Strip any query params
+        # Strip any query params for endpoint detection
         if '?' in api_path:
             api_path = api_path.split('?')[0]
             
@@ -449,6 +810,16 @@ def handle_api_request(client_socket, method, path):
     except:
         print("Could not parse API path")
         api_path = ""
+    
+    # Check for a return parameter
+    return_page = None
+    if '?' in path:
+        query_string = path.split('?')[1]
+        params = query_string.split('&')
+        for param in params:
+            if param.startswith('return='):
+                return_page = param.split('=')[1]
+                print(f"Return page specified: {return_page}")
     
     # Create JSON response
     response = {'status': 'error', 'message': 'Unknown command'}
@@ -473,6 +844,33 @@ def handle_api_request(client_socket, method, path):
                 print(f"ERROR in race_manager.start_race(): {e}")
                 response = {'status': 'error', 'message': f'Error starting race: {str(e)}'}
             
+        # If there's a return page, send HTML response instead of JSON
+        
+        # If there's a return page, send a redirect response
+        if return_page:
+            print(f"Redirecting to {return_page}")
+            redirect_response = f'HTTP/1.1 302 Found\r\n'
+            redirect_response += f'Location: /{return_page}\r\n'
+            redirect_response += 'Connection: close\r\n\r\n'
+            
+            try:
+                client_socket.send(redirect_response.encode('utf-8'))
+            except Exception as e:
+                print(f"Error sending redirect: {e}")
+            return        
+
+
+
+#         if return_page:
+#             try:
+#                 with open(f'./web/action_response.html', 'r') as file:
+#                     html_content = file.read()
+#                     html_content = html_content.replace('PLACEHOLDER_MESSAGE', f"Race Started Successfully!")
+#                     send_response(client_socket, 200, 'text/html', html_content)
+#                     return
+#             except Exception as e:
+#                 print(f"Error generating HTML response: {e}")
+            
     elif api_path.startswith('reset'):
         print("RESET RACE requested")
         
@@ -489,6 +887,32 @@ def handle_api_request(client_socket, method, path):
             except Exception as e:
                 print(f"ERROR in race_manager.reset_race(): {e}")
                 response = {'status': 'error', 'message': f'Error resetting race: {str(e)}'}
+        
+        # If there's a return page, send HTML response instead of JSON
+        
+        # If there's a return page, send a redirect response
+        if return_page:
+            print(f"Redirecting to {return_page}")
+            redirect_response = f'HTTP/1.1 302 Found\r\n'
+            redirect_response += f'Location: /{return_page}\r\n'
+            redirect_response += 'Connection: close\r\n\r\n'
+            
+            try:
+                client_socket.send(redirect_response.encode('utf-8'))
+            except Exception as e:
+                print(f"Error sending redirect: {e}")
+            return
+        
+        
+#         if return_page:
+#             try:
+#                 with open(f'./web/action_response.html', 'r') as file:
+#                     html_content = file.read()
+#                     html_content = html_content.replace('PLACEHOLDER_MESSAGE', f"Race Reset Successfully!")
+#                     send_response(client_socket, 200, 'text/html', html_content)
+#                     return
+#             except Exception as e:
+#                 print(f"Error generating HTML response: {e}")
         
     elif api_path.startswith('status'):
         # Get race status (omit detailed debug for this frequent call)

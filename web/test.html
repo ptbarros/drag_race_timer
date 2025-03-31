@@ -1,172 +1,290 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Simple API Test</title>
+    <title>Simple Race Controller</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        button { padding: 10px; margin: 5px; }
-        .log { 
-            background-color: #f0f0f0; 
-            padding: 10px; 
-            height: 200px; 
-            overflow: auto;
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2c3e50; text-align: center; }
+        .button-container { text-align: center; margin: 20px 0; }
+        .button {
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+        }
+        .button-start {
+            background-color: #27ae60;
+            color: white;
+        }
+        .button-reset {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .race-status {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .lanes-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .lane {
+            flex-basis: 48%;
+            background-color: #ecf0f1;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .lane h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        .lane-status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .lane-winner { font-weight: bold; color: #27ae60; }
+        .false-start { font-weight: bold; color: #e74c3c; }
+        #log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin-top: 20px;
             font-family: monospace;
-            border: 1px solid #ccc;
+            height: 100px;
+            overflow-y: auto;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
-    <h1>API Test Page</h1>
+    <div class="container">
+        <h1>Race Controller</h1>
+        
+        <div class="button-container">
+            <button id="startButton" class="button button-start">Start Race</button>
+            <button id="resetButton" class="button button-reset">Reset Race</button>
+        </div>
+        
+        <div class="race-status">
+            <div class="status-header">
+                <h2>Race Status</h2>
+                <span id="raceStatusText">Ready</span>
+            </div>
+            <div id="lightSequence">Waiting to start</div>
+        </div>
+        
+        <div class="lanes-container" id="lanesContainer">
+            <!-- Lanes will be generated dynamically -->
+        </div>
+        
+        <h3>Debug Log</h3>
+        <div id="log"></div>
+    </div>
     
-    <h2>1. Direct Links (no JavaScript)</h2>
-    <p>Click these links to directly call the API:</p>
-    <a href="/api/start" target="_blank">Start Race (Direct Link)</a><br>
-    <a href="/api/reset" target="_blank">Reset Race (Direct Link)</a><br>
-    <a href="/api/status" target="_blank">Get Status (Direct Link)</a>
-    
-    <h2>2. JavaScript Fetch API</h2>
-    <button onclick="testFetch()">Test Fetch API</button>
-    <button onclick="startWithFetch()">Start Race (Fetch)</button>
-    <button onclick="resetWithFetch()">Reset Race (Fetch)</button>
-    
-    <h2>3. XMLHttpRequest (Older Method)</h2>
-    <button onclick="testXHR()">Test XHR</button>
-    <button onclick="startWithXHR()">Start Race (XHR)</button>
-    <button onclick="resetWithXHR()">Reset Race (XHR)</button>
-    
-    <h2>4. Form Method (Fallback)</h2>
-    <form action="/api/start" method="get">
-        <input type="submit" value="Start Race (Form)">
-    </form>
-    <form action="/api/reset" method="get">
-        <input type="submit" value="Reset Race (Form)">
-    </form>
-    
-    <h2>Debug Log</h2>
-    <div class="log" id="log"></div>
-
     <script>
-        // Log function
-        function log(msg) {
-            const logElem = document.getElementById('log');
-            const time = new Date().toLocaleTimeString();
-            logElem.innerHTML += `[${time}] ${msg}<br>`;
-            logElem.scrollTop = logElem.scrollHeight;
-            console.log(`[${time}] ${msg}`);
+        // Simple logging function that worked in the test
+        function log(message) {
+            var logElement = document.getElementById('log');
+            logElement.innerHTML += message + "<br>";
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
         }
         
         log("Page loaded");
         
-        // Test basic Fetch API
-        function testFetch() {
-            log("Testing Fetch API...");
-            fetch('/api/status')
-                .then(response => {
-                    log(`Fetch response status: ${response.status}`);
-                    return response.json();
-                })
-                .then(data => {
-                    log(`Fetch successful! Response: ${JSON.stringify(data).substring(0, 50)}...`);
-                })
-                .catch(error => {
-                    log(`Fetch error: ${error}`);
-                });
-        }
+        // Get DOM elements
+        var startButton = document.getElementById('startButton');
+        var resetButton = document.getElementById('resetButton');
+        var raceStatusText = document.getElementById('raceStatusText');
+        var lightSequence = document.getElementById('lightSequence');
+        var lanesContainer = document.getElementById('lanesContainer');
         
-        // Start race with Fetch API
-        function startWithFetch() {
-            log("Starting race with Fetch...");
-            fetch('/api/start')
-                .then(response => {
-                    log(`Start response status: ${response.status}`);
-                    return response.json();
-                })
-                .then(data => {
-                    log(`Start successful! Response: ${JSON.stringify(data)}`);
-                })
-                .catch(error => {
-                    log(`Start error: ${error}`);
-                });
-        }
+        // Race data
+        var laneData = [];
         
-        // Reset race with Fetch API
-        function resetWithFetch() {
-            log("Resetting race with Fetch...");
-            fetch('/api/reset')
-                .then(response => {
-                    log(`Reset response status: ${response.status}`);
-                    return response.json();
-                })
-                .then(data => {
-                    log(`Reset successful! Response: ${JSON.stringify(data)}`);
-                })
-                .catch(error => {
-                    log(`Reset error: ${error}`);
-                });
-        }
+        // Start button handler - direct property assignment
+        startButton.onclick = function() {
+            log("Start button clicked");
+            
+            // Use XHR since it's proven to work
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/start', true);
+            
+            xhr.onload = function() {
+                log("Start command response: " + xhr.status);
+                if (xhr.status === 200) {
+                    log("Race started!");
+                    // Update status immediately
+                    fetchStatus();
+                }
+            };
+            
+            xhr.onerror = function() {
+                log("Error starting race");
+            };
+            
+            xhr.send();
+            log("Start request sent");
+            
+            // Return false to prevent default action
+            return false;
+        };
         
-        // Test XMLHttpRequest
-        function testXHR() {
-            log("Testing XMLHttpRequest...");
-            const xhr = new XMLHttpRequest();
+        // Reset button handler - direct property assignment
+        resetButton.onclick = function() {
+            log("Reset button clicked");
+            
+            // Use XHR since it's proven to work
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/reset', true);
+            
+            xhr.onload = function() {
+                log("Reset command response: " + xhr.status);
+                if (xhr.status === 200) {
+                    log("Race reset!");
+                    // Update status immediately
+                    fetchStatus();
+                }
+            };
+            
+            xhr.onerror = function() {
+                log("Error resetting race");
+            };
+            
+            xhr.send();
+            log("Reset request sent");
+            
+            // Return false to prevent default action
+            return false;
+        };
+        
+        // Function to fetch race status
+        function fetchStatus() {
+            var xhr = new XMLHttpRequest();
             xhr.open('GET', '/api/status', true);
             
             xhr.onload = function() {
                 if (xhr.status === 200) {
-                    log(`XHR successful! Response: ${xhr.responseText.substring(0, 50)}...`);
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        updateUI(data);
+                    } catch (e) {
+                        log("Error parsing status response: " + e);
+                    }
                 } else {
-                    log(`XHR error! Status: ${xhr.status}`);
+                    log("Error fetching status: " + xhr.status);
                 }
             };
             
             xhr.onerror = function() {
-                log("XHR request failed");
+                log("Network error when fetching status");
             };
             
             xhr.send();
         }
         
-        // Start race with XMLHttpRequest
-        function startWithXHR() {
-            log("Starting race with XHR...");
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', '/api/start', true);
+        // Update UI with race data
+        function updateUI(data) {
+            // Update race status
+            if (data.race_started) {
+                raceStatusText.textContent = 'In Progress';
+            } else {
+                raceStatusText.textContent = 'Ready';
+            }
             
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    log(`Start XHR successful! Response: ${xhr.responseText}`);
-                } else {
-                    log(`Start XHR error! Status: ${xhr.status}`);
-                }
-            };
+            // Update light sequence status
+            if (data.tree_running) {
+                lightSequence.textContent = 'Light sequence: ' + (data.light_sequence || 'Running');
+            } else if (data.race_started) {
+                lightSequence.textContent = 'Race in progress';
+            } else {
+                lightSequence.textContent = 'Waiting to start';
+            }
             
-            xhr.onerror = function() {
-                log("Start XHR request failed");
-            };
+            // Update lanes
+            var lanes = data.lanes || [];
             
-            xhr.send();
+            // Compare new lane data with current data
+            var dataChanged = JSON.stringify(lanes) !== JSON.stringify(laneData);
+            
+            // Only update DOM if data has changed
+            if (dataChanged) {
+                laneData = lanes;
+                
+                // Clear existing lanes
+                lanesContainer.innerHTML = '';
+                
+                // Add lanes
+                lanes.forEach(function(lane) {
+                    var laneElement = document.createElement('div');
+                    laneElement.className = 'lane';
+                    
+                    // Determine lane status
+                    var statusText = 'Ready';
+                    var statusClass = '';
+                    
+                    if (lane.false_start) {
+                        statusText = 'FALSE START';
+                        statusClass = 'false-start';
+                    } else if (lane.place === 1) {
+                        statusText = 'WINNER!';
+                        statusClass = 'lane-winner';
+                    } else if (lane.place) {
+                        statusText = 'Place: ' + lane.place;
+                    } else if (lane.staged && lane.prestaged) {
+                        statusText = 'Staged';
+                    } else if (lane.prestaged) {
+                        statusText = 'Pre-staged';
+                    }
+                    
+                    // Create lane HTML
+                    laneElement.innerHTML = '<h3>Lane ' + lane.lane_id + '</h3>' +
+                        '<div class="lane-status"><span>Status:</span><span class="' + statusClass + '">' + statusText + '</span></div>' +
+                        '<div class="lane-status"><span>Reaction Time:</span><span>' + 
+                            (lane.reaction_time !== null ? (lane.reaction_time / 1000).toFixed(3) + 's' : 'N/A') + '</span></div>' +
+                        '<div class="lane-status"><span>Finish Time:</span><span>' + 
+                            (lane.finish_time !== null ? (lane.finish_time / 1000).toFixed(3) + 's' : 'N/A') + '</span></div>';
+                    
+                    lanesContainer.appendChild(laneElement);
+                });
+            }
         }
         
-        // Reset race with XMLHttpRequest
-        function resetWithXHR() {
-            log("Resetting race with XHR...");
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', '/api/reset', true);
-            
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    log(`Reset XHR successful! Response: ${xhr.responseText}`);
-                } else {
-                    log(`Reset XHR error! Status: ${xhr.status}`);
-                }
-            };
-            
-            xhr.onerror = function() {
-                log("Reset XHR request failed");
-            };
-            
-            xhr.send();
-        }
+        // Start polling for status
+        log("Setting up status polling");
+        setInterval(fetchStatus, 500);
+        
+        // Fetch initial status
+        log("Fetching initial status");
+        fetchStatus();
     </script>
 </body>
 </html>

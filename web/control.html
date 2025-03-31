@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Race Controller</title>
+    <meta http-equiv="refresh" content="2; URL=control.html">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2c3e50; text-align: center; }
+        .button-container { text-align: center; margin: 20px 0; }
+        .button-link {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            margin: 0 10px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            color: white;
+        }
+        .button-start {
+            background-color: #27ae60;
+        }
+        .button-reset {
+            background-color: #e74c3c;
+        }
+        .refresh-button {
+            background-color: #3498db;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .race-status {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .lanes-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .lane {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .lane h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        .lane-status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .lane-winner { font-weight: bold; color: #27ae60; }
+        .false-start { font-weight: bold; color: #e74c3c; }
+        .note {
+            background-color: #fffde7;
+            border-left: 4px solid #fbc02d;
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .timestamp {
+            text-align: right;
+            font-size: 11px;
+            color: #999;
+            margin-top: 10px;
+        }
+        @media (max-width: 767px) {
+            .lanes-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Race Controller</h1>
+        
+        <div class="button-container">
+            <a href="/api/start?return=control.html" class="button-link button-start">Start Race</a>
+            <a href="/api/reset?return=control.html" class="button-link button-reset">Reset Race</a>
+            <div style="margin-top: 10px;">
+                <a href="/control.html" class="refresh-button">Manual Refresh</a>
+            </div>
+        </div>
+        
+        <div class="race-status">
+            <div class="status-header">
+                <h2>Race Status</h2>
+                <span id="raceStatusText"><!-- Status will be filled by server side--></span>
+            </div>
+            <div id="lightSequence"><!-- Sequence will be filled by server side--></div>
+        </div>
+        
+        <div class="lanes-container" id="lanesContainer">
+            <!-- Lane information will be generated server-side -->
+        </div>
+        
+        <div class="note">
+            <p><strong>Note:</strong> This page automatically refreshes to show current race status.</p>
+        </div>
+        
+        <div class="timestamp">
+            Page generated: <!-- TIME_STAMP -->
+        </div>
+    </div>
+</body>
+</html>

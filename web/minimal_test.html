@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        button { padding: 10px; margin: 5px; }
+        #log { background: #f0f0f0; padding: 10px; height: 200px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <h1>Minimal Test Page</h1>
+    
+    <div>
+        <h2>Simple Tests</h2>
+        <button id="testButton">Test Button (click me first)</button>
+        <button id="alertButton">Show Alert</button>
+        <a href="/api/start" id="directLink">Direct Link (this should work)</a>
+    </div>
+    
+    <div>
+        <h2>Simple API Tests</h2>
+        <button id="fetchButton">Test Fetch API</button>
+        <button id="xhrButton">Test XMLHttpRequest</button>
+    </div>
+    
+    <div>
+        <h2>Debug Log</h2>
+        <div id="log"></div>
+    </div>
+    
+    <script>
+        // Try several different ways to write to the log
+        // Method 1: Basic DOM manipulation
+        document.getElementById('log').innerHTML += "Page loaded<br>";
+        
+        // Method 2: Function for logging
+        function log(message) {
+            var logElement = document.getElementById('log');
+            logElement.innerHTML += message + "<br>";
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message); // Also log to console
+        }
+        
+        log("Log function defined");
+        
+        // Method 3: Direct event handler
+        document.getElementById('testButton').onclick = function() {
+            log("Test button clicked via onclick property");
+        };
+        
+        // Method 4: addEventListener
+        document.getElementById('alertButton').addEventListener('click', function() {
+            log("Alert button clicked via addEventListener");
+            alert("This is a test alert");
+        });
+        
+        // Method 5: Direct onclick in HTML
+        function handleFetch() {
+            log("Fetch button clicked");
+            
+            fetch('/api/status')
+                .then(function(response) {
+                    log("Fetch response received: " + response.status);
+                    return response.json();
+                })
+                .then(function(data) {
+                    log("Data received: " + JSON.stringify(data).slice(0, 50) + "...");
+                })
+                .catch(function(error) {
+                    log("Fetch error: " + error);
+                });
+        }
+        
+        // Method 6: XMLHttpRequest
+        function handleXHR() {
+            log("XHR button clicked");
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/status', true);
+            
+            xhr.onload = function() {
+                log("XHR response received: " + xhr.status);
+                if (xhr.status === 200) {
+                    log("XHR data: " + xhr.responseText.slice(0, 50) + "...");
+                }
+            };
+            
+            xhr.onerror = function() {
+                log("XHR error occurred");
+            };
+            
+            xhr.send();
+            log("XHR request sent");
+        }
+        
+        // Add event listeners using a different approach
+        document.getElementById('fetchButton').onclick = handleFetch;
+        document.getElementById('xhrButton').onclick = handleXHR;
+        
+        // Check if the document is loaded
+        log("Document ready state: " + document.readyState);
+    </script>
+</body>
+</html>
